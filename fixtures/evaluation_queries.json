@@ -1,0 +1,114 @@
+[
+  {
+    "id": "q1",
+    "query": "Elena Rostova",
+    "category": "exact_researcher",
+    "type": "researchers",
+    "expected_ids": ["res_elena_rostova_mit"],
+    "graded_relevance": { "res_elena_rostova_mit": 3 }
+  },
+  {
+    "id": "q2",
+    "query": "Elena Rostva",
+    "category": "typo_researcher",
+    "type": "researchers",
+    "expected_ids": ["res_elena_rostova_mit"],
+    "graded_relevance": { "res_elena_rostova_mit": 3 }
+  },
+  {
+    "id": "q3",
+    "query": "Marcus Vance",
+    "category": "exact_researcher",
+    "type": "researchers",
+    "expected_ids": ["res_marcus_vance_stanford"],
+    "graded_relevance": { "res_marcus_vance_stanford": 3 }
+  },
+  {
+    "id": "q4",
+    "query": "Diffusion Flow Matching",
+    "category": "exact_paper",
+    "type": "publications",
+    "expected_ids": ["pub_diffusion_flow_2025"],
+    "graded_relevance": { "pub_diffusion_flow_2025": 3 }
+  },
+  {
+    "id": "q5",
+    "query": "Diffus Flow Matchng",
+    "category": "typo_paper",
+    "type": "publications",
+    "expected_ids": ["pub_diffusion_flow_2025"],
+    "graded_relevance": { "pub_diffusion_flow_2025": 3 }
+  },
+  {
+    "id": "q6",
+    "query": "Agentic AI",
+    "category": "topic_search",
+    "type": "all",
+    "expected_ids": ["res_marcus_vance_stanford", "res_priya_sharma_toronto", "pub_agent_planning_2026"],
+    "graded_relevance": {
+      "pub_agent_planning_2026": 3,
+      "res_marcus_vance_stanford": 2,
+      "res_priya_sharma_toronto": 2
+    }
+  },
+  {
+    "id": "q7",
+    "query": "Histopathology Pathology",
+    "category": "medical_ai",
+    "type": "publications",
+    "expected_ids": ["pub_medical_pathology_2024"],
+    "graded_relevance": { "pub_medical_pathology_2024": 3 }
+  },
+  {
+    "id": "q8",
+    "query": "Stanford University",
+    "category": "exact_institution",
+    "type": "institutions",
+    "expected_ids": ["inst_stanford"],
+    "graded_relevance": { "inst_stanford": 3 }
+  },
+  {
+    "id": "q9",
+    "query": "Stanfrd Unversity",
+    "category": "typo_institution",
+    "type": "institutions",
+    "expected_ids": ["inst_stanford"],
+    "graded_relevance": { "inst_stanford": 3 }
+  },
+  {
+    "id": "q10",
+    "query": "Gaussian Splatting",
+    "category": "vision_paper",
+    "type": "publications",
+    "expected_ids": ["pub_spatial_nerf_2026"],
+    "graded_relevance": { "pub_spatial_nerf_2026": 3 }
+  },
+  {
+    "id": "q11",
+    "query": "MLOps",
+    "category": "topic_search",
+    "type": "all",
+    "expected_ids": ["res_lars_lindqvist_eth", "pub_mlops_robustness_2024", "res_clara_weber_tum"],
+    "graded_relevance": {
+      "pub_mlops_robustness_2024": 3,
+      "res_lars_lindqvist_eth": 2,
+      "res_clara_weber_tum": 2
+    }
+  },
+  {
+    "id": "q12",
+    "query": "Hallucinations FactScore",
+    "category": "nlp_reasoning",
+    "type": "publications",
+    "expected_ids": ["pub_hallucination_eval_2025"],
+    "graded_relevance": { "pub_hallucination_eval_2025": 3 }
+  },
+  {
+    "id": "q13",
+    "query": "xyznonexistentgibberish123",
+    "category": "zero_result_check",
+    "type": "all",
+    "expected_ids": [],
+    "graded_relevance": {}
+  }
+]

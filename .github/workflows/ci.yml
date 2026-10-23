@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-test:
+    name: Backend Lint & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run Ruff Linting
+        run: |
+          ruff check backend
+
+      - name: Run Pytest
+        env:
+          DATABASE_URL: "sqlite:///:memory:"
+          MEILI_HTTP_ADDR: "http://127.0.0.1:7700"
+          MEILI_MASTER_KEY: "test_master_key"
+          ADMIN_API_KEY: "test_admin_key"
+        run: |
+          pytest backend/tests -v
+
+  frontend-test:
+    name: Frontend Typecheck & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: frontend/package.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run TypeScript Typecheck
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run Vitest
+        working-directory: frontend
+        run: npm test
