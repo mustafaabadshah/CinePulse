@@ -13,7 +13,9 @@ from app.schemas.search import (
 )
 from app.search.client import get_meili_client
 from app.search.indexes import (
+    INDEX_EPISODES,
     INDEX_INSTITUTIONS,
+    INDEX_PROGRAMS,
     INDEX_PUBLICATIONS,
     INDEX_RESEARCHERS,
 )
@@ -224,6 +226,120 @@ class SearchService:
                     )
             except Exception as e:
                 logger.error(f"Error querying institution index: {e}")
+
+        # 4. Episode index query
+        if target_type in ("all", "episodes"):
+            filter_str = self.build_safe_filter_expression(
+                req.filters or {}, settings.allowed_episode_filters
+            )
+            search_params = {
+                "limit": limit if target_type == "episodes" else min(limit, 10),
+                "offset": offset if target_type == "episodes" else 0,
+                "attributesToHighlight": ["title", "program_name", "stars", "genre", "description", "channel_name"],
+                "highlightPreTag": "<mark>",
+                "highlightPostTag": "</mark>",
+                "facets": [
+                    "is_free",
+                    "content_tier",
+                    "genre",
+                    "language",
+                    "channel_name",
+                    "region",
+                    "is_vertical",
+                ],
+            }
+            if filter_str:
+                search_params["filter"] = filter_str
+            if req.sort and target_type == "episodes":
+                search_params["sort"] = [req.sort]
+
+            try:
+                res = self.client.index(INDEX_EPISODES).search(query, search_params)
+                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
+                if "facetDistribution" in res:
+                    for facet_k, facet_v in res["facetDistribution"].items():
+                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
+
+                for item in res.get("hits", []):
+                    formatted = item.get("_formatted", {})
+                    prog_str = item.get("program_name") or ""
+                    chan_str = item.get("channel_name") or ""
+                    dur_str = item.get("duration") or ""
+                    subtitle_parts = [p for p in [prog_str, chan_str, dur_str] if p]
+                    subtitle = " • ".join(subtitle_parts) if subtitle_parts else "Episode"
+                    tags = item.get("genre_list") or ([item.get("genre")] if item.get("genre") else [])
+
+                    hits.append(
+                        SearchResultItem(
+                            id=item["id"],
+                            type="episode",
+                            title=item["title"],
+                            subtitle=subtitle,
+                            snippet=item.get("description", ""),
+                            tags=tags,
+                            source_url=item.get("thumbnail"),
+                            is_synthetic=False,
+                            raw=item,
+                            formatted=formatted,
+                        )
+                    )
+            except Exception as e:
+                logger.error(f"Error querying episode index: {e}")
+
+        # 5. Program index query
+        if target_type in ("all", "programs"):
+            filter_str = self.build_safe_filter_expression(
+                req.filters or {}, settings.allowed_program_filters
+            )
+            search_params = {
+                "limit": limit if target_type == "programs" else min(limit, 10),
+                "offset": offset if target_type == "programs" else 0,
+                "attributesToHighlight": ["name", "info_staring", "info_genre", "channel_name"],
+                "highlightPreTag": "<mark>",
+                "highlightPostTag": "</mark>",
+                "facets": ["type", "info_language", "channel_name", "info_content_type"],
+            }
+            if filter_str:
+                search_params["filter"] = filter_str
+            if req.sort and target_type == "programs":
+                search_params["sort"] = [req.sort]
+
+            try:
+                res = self.client.index(INDEX_PROGRAMS).search(query, search_params)
+                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
+                if "facetDistribution" in res:
+                    for facet_k, facet_v in res["facetDistribution"].items():
+                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
+
+                for item in res.get("hits", []):
+                    formatted = item.get("_formatted", {})
+                    chan_str = item.get("channel_name") or ""
+                    lang_str = item.get("info_language") or ""
+                    ctype_str = item.get("info_content_type") or ""
+                    sub_parts = [p for p in [chan_str, lang_str, ctype_str] if p]
+                    subtitle = " • ".join(sub_parts) if sub_parts else item.get("type", "program").title()
+
+                    cast_str = item.get("info_staring")
+                    snippet = f"Starring: {cast_str}" if cast_str else (item.get("info_meta_keywords") or "")
+                    tags = item.get("genre_list") or ([item.get("info_genre")] if item.get("info_genre") else [])
+
+                    hits.append(
+                        SearchResultItem(
+                            id=item["id"],
+                            type="program",
+                            title=item["name"],
+                            subtitle=subtitle,
+                            snippet=snippet,
+                            tags=tags,
+                            source_url=None,
+                            is_synthetic=False,
+                            raw=item,
+                            formatted=formatted,
+                        )
+                    )
+            except Exception as e:
+                logger.error(f"Error querying program index: {e}")
+
 
         # Compute elapsed time
         duration_ms = round((time.perf_counter() - start_time) * 1000.0, 2)

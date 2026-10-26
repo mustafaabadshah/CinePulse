@@ -1,6 +1,6 @@
 export interface SearchResultItem {
   id: string;
-  type: 'researcher' | 'publication' | 'institution';
+  type: 'researcher' | 'publication' | 'institution' | 'episode' | 'program';
   title: string;
   subtitle?: string;
   snippet?: string;
@@ -74,6 +74,71 @@ export interface Institution {
   updated_at: string;
 }
 
+export interface Episode {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  program_id?: string;
+  duration?: string;
+  duration_seconds?: number;
+  views: number;
+  is_free: boolean;
+  is_enable: boolean;
+  content_tier?: string;
+  genre?: string;
+  genre_list: string[];
+  region?: string;
+  is_vertical?: string;
+  thumbnail?: string;
+  channel_name?: string;
+  channel_status: boolean;
+  source_file: string;
+  imported_at?: string;
+  created_at: string;
+  updated_at: string;
+  program?: Program;
+  sibling_episodes?: {
+    id: string;
+    title: string;
+    duration?: string;
+    views: number;
+    thumbnail?: string;
+    is_free: boolean;
+  }[];
+}
+
+export interface Program {
+  id: string;
+  type: 'program' | 'channel';
+  name: string;
+  slug: string;
+  channel_name?: string;
+  info_language?: string;
+  info_genre?: string;
+  genre_list: string[];
+  info_meta_keywords?: string;
+  info_content_type?: string;
+  info_staring?: string;
+  starring_list: string[];
+  source_file: string;
+  imported_at?: string;
+  created_at: string;
+  updated_at: string;
+  episode_count?: number;
+  episodes?: {
+    id: string;
+    title: string;
+    slug: string;
+    duration?: string;
+    duration_seconds?: number;
+    views: number;
+    is_free: boolean;
+    thumbnail?: string;
+    genre?: string;
+  }[];
+}
+
 export interface Provenance {
   source_provider: string;
   source_url?: string;
@@ -83,7 +148,7 @@ export interface Provenance {
 
 export interface ImportJob {
   id: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'dry_run_completed' | 'search_sync_failed';
   source_name: string;
   dry_run: boolean;
   records_processed: number;
@@ -124,4 +189,26 @@ export interface HealthStatus {
       indexes?: Record<string, { number_of_documents: number; is_indexing: boolean }>;
     };
   };
+}
+
+export interface IndexStatusSummary {
+  status: string;
+  meilisearch_reachable: boolean;
+  indexes: Record<string, { database_count: number; indexed_count: number; is_synchronized: boolean }>;
+  pending_tasks_count: number;
+  failed_tasks_count: number;
+  last_sync_time?: string;
+}
+
+export interface SourceFilesStatus {
+  data_dir: string;
+  files: Record<string, {
+    filename: string;
+    path: string;
+    exists: boolean;
+    readable: boolean;
+    size_bytes: number;
+    modified_at?: string;
+    error?: string;
+  }>;
 }

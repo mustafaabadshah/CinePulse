@@ -9,8 +9,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.routes_admin import router as admin_router
+from app.api.routes_episodes import router as episodes_router
 from app.api.routes_health import router as health_router
 from app.api.routes_institutions import router as institutions_router
+from app.api.routes_programs import router as programs_router
 from app.api.routes_publications import router as publications_router
 from app.api.routes_researchers import router as researchers_router
 from app.api.routes_search import router as search_router
@@ -117,6 +119,8 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include API Routers under /api
 app.include_router(health_router, prefix="/api")
 app.include_router(search_router, prefix="/api")
+app.include_router(episodes_router, prefix="/api")
+app.include_router(programs_router, prefix="/api")
 app.include_router(researchers_router, prefix="/api")
 app.include_router(publications_router, prefix="/api")
 app.include_router(institutions_router, prefix="/api")

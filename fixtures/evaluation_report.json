@@ -1,17 +1,17 @@
 {
-  "evaluation_timestamp": "2026-10-23T09:42:34Z",
-  "total_queries": 13,
-  "mean_mrr": 0.9231,
-  "mean_precision@1": 0.9231,
-  "mean_precision@3": 0.8974,
-  "mean_recall@3": 0.8974,
-  "mean_ndcg@3": 0.8676,
-  "zero_result_rate_pct": 7.69,
+  "evaluation_timestamp": "2026-10-26T09:20:43Z",
+  "total_queries": 19,
+  "mean_mrr": 0.9023,
+  "mean_precision@1": 0.8947,
+  "mean_precision@3": 0.8509,
+  "mean_recall@3": 0.8509,
+  "mean_ndcg@3": 0.8568,
+  "zero_result_rate_pct": 5.26,
   "latency_percentiles_ms": {
-    "p50": 34.89,
-    "p90": 109.47,
-    "p99": 148.68,
-    "mean": 52.91
+    "p50": 33.61,
+    "p90": 125.19,
+    "p99": 166.94,
+    "mean": 52.83
   },
   "query_details": [
     {
@@ -25,7 +25,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 148.68
+      "latency_ms": 67.71
     },
     {
       "id": "q2",
@@ -38,7 +38,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 20.88
+      "latency_ms": 23.05
     },
     {
       "id": "q3",
@@ -51,7 +51,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 14.97
+      "latency_ms": 17.16
     },
     {
       "id": "q4",
@@ -64,7 +64,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 74.02
+      "latency_ms": 43.69
     },
     {
       "id": "q5",
@@ -77,7 +77,7 @@
       "precision@3": 0.0,
       "recall@3": 0.0,
       "ndcg@3": 0.0,
-      "latency_ms": 18.13
+      "latency_ms": 16.49
     },
     {
       "id": "q6",
@@ -90,7 +90,7 @@
       "precision@3": 0.667,
       "recall@3": 0.667,
       "ndcg@3": 0.471,
-      "latency_ms": 109.47
+      "latency_ms": 125.19
     },
     {
       "id": "q7",
@@ -103,7 +103,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 36.15
+      "latency_ms": 29.91
     },
     {
       "id": "q8",
@@ -116,7 +116,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 29.69
+      "latency_ms": 28.69
     },
     {
       "id": "q9",
@@ -129,7 +129,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 14.81
+      "latency_ms": 33.57
     },
     {
       "id": "q10",
@@ -142,7 +142,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 30.04
+      "latency_ms": 43.07
     },
     {
       "id": "q11",
@@ -155,7 +155,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 0.808,
-      "latency_ms": 75.13
+      "latency_ms": 166.94
     },
     {
       "id": "q12",
@@ -168,7 +168,7 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 34.89
+      "latency_ms": 32.33
     },
     {
       "id": "q13",
@@ -181,7 +181,85 @@
       "precision@3": 1.0,
       "recall@3": 1.0,
       "ndcg@3": 1.0,
-      "latency_ms": 80.95
+      "latency_ms": 123.64
+    },
+    {
+      "id": "q14",
+      "query": "Honda Civic RS Turbo",
+      "category": "exact_episode_vehicle",
+      "expected_count": 1,
+      "retrieved_count": 2,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "precision@3": 0.5,
+      "recall@3": 1.0,
+      "ndcg@3": 1.0,
+      "latency_ms": 47.03
+    },
+    {
+      "id": "q15",
+      "query": "Ehd E Wafa",
+      "category": "exact_program_drama",
+      "expected_count": 1,
+      "retrieved_count": 1,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "ndcg@3": 1.0,
+      "latency_ms": 31.45
+    },
+    {
+      "id": "q16",
+      "query": "PakWheels Review",
+      "category": "channel_program_search",
+      "expected_count": 4,
+      "retrieved_count": 10,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "precision@3": 1.0,
+      "recall@3": 0.75,
+      "ndcg@3": 1.0,
+      "latency_ms": 24.35
+    },
+    {
+      "id": "q17",
+      "query": "Muhabbat Khel Tamasha",
+      "category": "exact_episode_teaser",
+      "expected_count": 3,
+      "retrieved_count": 8,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "ndcg@3": 1.0,
+      "latency_ms": 48.97
+    },
+    {
+      "id": "q18",
+      "query": "World Cup Ka Tamasha",
+      "category": "sports_episode_series",
+      "expected_count": 4,
+      "retrieved_count": 10,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "precision@3": 1.0,
+      "recall@3": 0.75,
+      "ndcg@3": 1.0,
+      "latency_ms": 66.88
+    },
+    {
+      "id": "q19",
+      "query": "Tamsha",
+      "category": "typo_program",
+      "expected_count": 1,
+      "retrieved_count": 10,
+      "mrr": 0.143,
+      "precision@1": 0.0,
+      "precision@3": 0.0,
+      "recall@3": 0.0,
+      "ndcg@3": 0.0,
+      "latency_ms": 33.61
     }
   ]
 }

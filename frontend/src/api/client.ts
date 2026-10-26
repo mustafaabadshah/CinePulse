@@ -3,10 +3,14 @@ import {
   Researcher,
   Publication,
   Institution,
+  Episode,
+  Program,
   Provenance,
   ImportJob,
   SearchAnalyticsSummary,
   HealthStatus,
+  IndexStatusSummary,
+  SourceFilesStatus,
 } from "../types";
 
 const API_BASE = "/api";
@@ -25,6 +29,15 @@ export async function search(params: {
   keywords?: string;
   source_provider?: string;
   is_synthetic?: boolean;
+  is_free?: boolean;
+  content_tier?: string;
+  genre?: string;
+  channel_name?: string;
+  info_language?: string;
+  info_content_type?: string;
+  region?: string;
+  is_vertical?: string;
+  program_id?: string;
 }): Promise<SearchResponse> {
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, val]) => {
@@ -80,18 +93,51 @@ export async function getInstitution(id: string): Promise<{
   return res.json();
 }
 
+export async function getEpisode(id: string): Promise<Episode> {
+  const res = await fetch(`${API_BASE}/episodes/${encodeURIComponent(id)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to load episode: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function getProgram(id: string): Promise<Program> {
+  const res = await fetch(`${API_BASE}/programs/${encodeURIComponent(id)}`);
+  if (!res.ok) {
+    throw new Error(`Failed to load program: ${res.statusText}`);
+  }
+  return res.json();
+}
+
 export async function getHealth(): Promise<HealthStatus> {
   const res = await fetch(`${API_BASE}/health`);
   return res.json();
 }
 
 // Admin API
+export async function getSourceFiles(apiKey: string = "rr_admin_secret_dev_key_change_me"): Promise<SourceFilesStatus> {
+  const res = await fetch(`${API_BASE}/admin/source-files`, {
+    headers: { "X-Admin-API-Key": apiKey },
+  });
+  if (!res.ok) throw new Error("Failed to load source files status");
+  return res.json();
+}
+
+export async function getIndexStatus(apiKey: string = "rr_admin_secret_dev_key_change_me"): Promise<IndexStatusSummary> {
+  const res = await fetch(`${API_BASE}/admin/index-status`, {
+    headers: { "X-Admin-API-Key": apiKey },
+  });
+  if (!res.ok) throw new Error("Failed to load index status");
+  return res.json();
+}
+
 export async function triggerImport(
   payload?: any,
   dry_run: boolean = false,
+  sourceType: string = "csv",
   apiKey: string = "rr_admin_secret_dev_key_change_me"
 ): Promise<ImportJob> {
-  const res = await fetch(`${API_BASE}/admin/import?dry_run=${dry_run}`, {
+  const res = await fetch(`${API_BASE}/admin/import?dry_run=${dry_run}&source_type=${sourceType}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

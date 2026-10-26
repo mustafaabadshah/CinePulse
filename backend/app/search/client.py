@@ -21,6 +21,10 @@ def get_meili_client() -> Client:
     return _client
 
 
+# Alias for compatibility
+get_meilisearch_client = get_meili_client
+
+
 def check_meili_health() -> bool:
     """Checks whether the Meilisearch service is healthy and responsive."""
     try:

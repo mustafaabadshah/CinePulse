@@ -101,6 +101,8 @@ export const SearchResultsPage: React.FC = () => {
 
   const tabs = [
     { id: "all", label: "All Results" },
+    { id: "episodes", label: "Episodes" },
+    { id: "programs", label: "Shows & Channels" },
     { id: "publications", label: "Papers" },
     { id: "researchers", label: "Researchers" },
     { id: "institutions", label: "Institutions" },
@@ -127,7 +129,7 @@ export const SearchResultsPage: React.FC = () => {
               setInputVal(e.target.value);
               setPage(1);
             }}
-            placeholder="Search papers, authors, universities, or keywords..."
+            placeholder="Search episodes, TV shows, actors, channels, papers, authors..."
             style={{
               width: "100%",
               background: "transparent",
@@ -144,7 +146,7 @@ export const SearchResultsPage: React.FC = () => {
                 setInputVal("");
                 setPage(1);
               }}
-              style={{ color: "var(--text-muted)", padding: "4px" }}
+              style={{ color: "var(--text-muted)", padding: "4px", background: "transparent", border: "none", cursor: "pointer" }}
               title="Clear search query"
             >
               <X size={18} />
@@ -164,7 +166,7 @@ export const SearchResultsPage: React.FC = () => {
           paddingBottom: "8px"
         }}>
           {/* Tabs */}
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -177,6 +179,7 @@ export const SearchResultsPage: React.FC = () => {
                   borderRadius: "8px",
                   fontSize: "0.9rem",
                   fontWeight: 500,
+                  cursor: "pointer",
                   color: activeType === tab.id ? "#ffffff" : "var(--text-secondary)",
                   background: activeType === tab.id ? "rgba(59, 130, 246, 0.2)" : "transparent",
                   border: activeType === tab.id ? "1px solid rgba(59, 130, 246, 0.4)" : "1px solid transparent",
@@ -204,10 +207,25 @@ export const SearchResultsPage: React.FC = () => {
                 borderRadius: "6px",
                 padding: "6px 10px",
                 fontSize: "0.85rem",
-                outline: "none"
+                outline: "none",
+                cursor: "pointer"
               }}
             >
               <option value="">Relevance</option>
+              {activeType === "episodes" && (
+                <>
+                  <option value="views:desc">Most Viewed</option>
+                  <option value="duration_seconds:desc">Longest Duration</option>
+                  <option value="duration_seconds:asc">Shortest Duration</option>
+                  <option value="title:asc">Title (A-Z)</option>
+                </>
+              )}
+              {activeType === "programs" && (
+                <>
+                  <option value="name:asc">Name (A-Z)</option>
+                  <option value="name:desc">Name (Z-A)</option>
+                </>
+              )}
               {activeType === "publications" && (
                 <option value="publication_year:desc">Year (Newest First)</option>
               )}

@@ -1,9 +1,15 @@
 """Application Configuration module for ResearchRadar."""
 
+import os
 from typing import List, Set
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DEFAULT_DB_PATH = os.path.join(PROJECT_ROOT, "data", "researchradar.db").replace("\\", "/")
+DEFAULT_DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 
 
 class Settings(BaseSettings):
@@ -23,7 +29,7 @@ class Settings(BaseSettings):
     )
 
     # Database
-    database_url: str = Field(default="sqlite:///./data/researchradar.db", alias="DATABASE_URL")
+    database_url: str = Field(default=f"sqlite:///{DEFAULT_DB_PATH}", alias="DATABASE_URL")
 
     # Meilisearch
     meili_http_addr: str = Field(default="http://127.0.0.1:7700", alias="MEILI_HTTP_ADDR")
@@ -37,6 +43,11 @@ class Settings(BaseSettings):
     max_search_limit: int = Field(default=100, alias="MAX_SEARCH_LIMIT")
     max_page_size: int = Field(default=50, alias="MAX_PAGE_SIZE")
     ingestion_batch_size: int = Field(default=100, alias="INGESTION_BATCH_SIZE")
+
+    # CSV Data Ingestion Settings
+    csv_data_dir: str = Field(default=DEFAULT_DATA_DIR, alias="CSV_DATA_DIR")
+    csv_enrichment_file: str = Field(default="prod_enrichment.csv", alias="CSV_ENRICHMENT_FILE")
+    csv_episodes_file: str = Field(default="episodes_prod.csv", alias="CSV_EPISODES_FILE")
 
     # Allowlisted Search Filters (Security hardening against arbitrary expressions)
     allowed_researcher_filters: Set[str] = {
@@ -56,6 +67,24 @@ class Settings(BaseSettings):
     }
 
     allowed_institution_filters: Set[str] = {"country", "city"}
+
+    allowed_program_filters: Set[str] = {
+        "type",
+        "info_language",
+        "channel_name",
+        "info_content_type",
+    }
+
+    allowed_episode_filters: Set[str] = {
+        "is_free",
+        "content_tier",
+        "genre",
+        "language",
+        "channel_name",
+        "region",
+        "is_vertical",
+        "program_id",
+    }
 
     @property
     def cors_origin_list(self) -> List[str]:

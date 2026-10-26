@@ -7,6 +7,8 @@ import { SearchResultsPage } from "./pages/SearchResultsPage";
 import { ResearcherDetailPage } from "./pages/ResearcherDetailPage";
 import { PublicationDetailPage } from "./pages/PublicationDetailPage";
 import { InstitutionDetailPage } from "./pages/InstitutionDetailPage";
+import { EpisodeDetailPage } from "./pages/EpisodeDetailPage";
+import { ProgramDetailPage } from "./pages/ProgramDetailPage";
 import { AdminPage } from "./pages/AdminPage";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { HealthPage } from "./pages/HealthPage";
@@ -20,6 +22,8 @@ export const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/search" element={<SearchResultsPage />} />
+            <Route path="/episodes/:id" element={<EpisodeDetailPage />} />
+            <Route path="/programs/:id" element={<ProgramDetailPage />} />
             <Route path="/researchers/:id" element={<ResearcherDetailPage />} />
             <Route path="/publications/:id" element={<PublicationDetailPage />} />
             <Route path="/institutions/:id" element={<InstitutionDetailPage />} />

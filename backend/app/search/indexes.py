@@ -7,11 +7,23 @@ from app.search.client import get_meili_client
 from meilisearch import Client
 from meilisearch.errors import MeilisearchApiError
 
+from app.services.meilisearch_indexer import (
+    INDEX_EPISODES,
+    INDEX_PROGRAMS,
+    MEDIA_INDEX_CONFIGS,
+)
+
 INDEX_RESEARCHERS = "researchers"
 INDEX_PUBLICATIONS = "publications"
 INDEX_INSTITUTIONS = "institutions"
 
-ALL_INDEXES = [INDEX_RESEARCHERS, INDEX_PUBLICATIONS, INDEX_INSTITUTIONS]
+ALL_INDEXES = [
+    INDEX_RESEARCHERS,
+    INDEX_PUBLICATIONS,
+    INDEX_INSTITUTIONS,
+    INDEX_EPISODES,
+    INDEX_PROGRAMS,
+]
 
 INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
     INDEX_RESEARCHERS: {
@@ -165,6 +177,7 @@ INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "maxTotalHits": 2000,
         },
     },
+    **MEDIA_INDEX_CONFIGS,
 }
 
 

@@ -35,6 +35,8 @@ ENV/
 data/
 meili_data/
 postgres_data/
+dumps/
+backups/
 bin/
 
 # Testing & Coverage
