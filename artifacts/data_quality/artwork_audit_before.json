@@ -1,0 +1,294 @@
+{
+  "summary": {
+    "programs": {
+      "total_programs": 634,
+      "direct_artwork_columns_in_csv": 0,
+      "programs_with_direct_csv_artwork": 0,
+      "programs_with_child_episode_artwork": 502,
+      "programs_without_episodes": 132,
+      "programs_with_episodes_but_no_artwork": 0
+    },
+    "episodes": {
+      "total_episodes": 6547,
+      "with_thumbnail_url": 6547,
+      "missing_thumbnail_url": 0,
+      "coverage_pct": 100.0,
+      "top_hostnames": {
+        "malformed": 6292,
+        "srv2.jazztv.pk": 241,
+        "tamasha-app-images.s3.amazonaws.com": 9,
+        "images.mjunoon.tv:8181": 5
+      }
+    },
+    "network_sample_verification": {
+      "sample_size": 30,
+      "accessible": 0,
+      "failed_or_blocked": 30,
+      "accessible_pct": 0.0
+    }
+  },
+  "sample_network_results": {
+    "uploads/episodes/PgP658VykOd.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/HR3eNz6l3UA.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/w7Zgm9dNM4V.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/7FWeC44W6pQ.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/TghNIVJ5xS2.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/3gR7ThcBQ1w.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/MQnEWMrVLmQ.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/8shufsf40Px.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/WLEXQYGQePy.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/E4HqAlXSbIB.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/hLSg5QNSMLj.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/BFcIYtM2C93.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/D4JWnyBTfnv.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/KJJ3wdgaQEH.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/59nJ779vEqy.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/IGyesuI9oAi.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/781FFA14KHg.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/kg0XjAW4pIh.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/JXWv10UU5FY.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/RCcr7kmUb9J.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/alHvhtmvBkb.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/vWzcwnzkOBD.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/zA6406d854S.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/kXDvzNqcwrc.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/RlJQHhbPxRl.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/TMSH-1721320799589.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/MPLq1zgVckI.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/PFZLee9Bacd.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/KTaGnlWNfrk.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    },
+    "uploads/episodes/d0m9cmT6dlj.webp": {
+      "status": "malformed",
+      "code": 0,
+      "content_type": null,
+      "accessible": false
+    }
+  },
+  "top_reused_thumbnails": [
+    [
+      "nothumbnail",
+      504
+    ],
+    [
+      "uploads/episodes/sKuLaTwNOmF.webp",
+      2
+    ],
+    [
+      "uploads/episodes/zz7vpyTF2aR.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zyeC26YUaQk.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zxC6kE6nHDT.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zwvSRAbsZAm.webp",
+      1
+    ],
+    [
+      "uploads/episodes/ztT1zKxPhOg.webp",
+      1
+    ],
+    [
+      "uploads/episodes/ztKUtaDh5lQ.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zt3ElFsIVL6.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zsQbSCisUOf.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zsOg48QEhwK.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zqzATkdhSwx.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zphkSGVcgzo.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zoRWny4MvzS.webp",
+      1
+    ],
+    [
+      "uploads/episodes/znuw1t0LXlH.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zmMsfuMKxvH.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zm3coRHHE5K.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zlDpgDb3kAx.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zkMzpmA3zjp.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zjuT41MOXoB.webp",
+      1
+    ]
+  ]
+}

@@ -15,7 +15,9 @@ export const SearchResultsPage: React.FC = () => {
 
   const [inputVal, setInputVal] = useState(initialQuery);
   const [activeType, setActiveType] = useState<"all" | "episodes" | "programs" | "channels">(initialType);
-  const [sortOrder, setSortOrder] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>(() => {
+    return searchParams.get("sort") || (searchParams.get("program_id") ? "episode_number:asc" : "");
+  });
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(12);
 
@@ -26,6 +28,7 @@ export const SearchResultsPage: React.FC = () => {
     if (searchParams.get("channel_name")) f.channel_name = searchParams.get("channel_name");
     if (searchParams.get("is_free")) f.is_free = searchParams.get("is_free") === "true";
     if (searchParams.get("content_tier")) f.content_tier = searchParams.get("content_tier");
+    if (searchParams.get("program_id")) f.program_id = searchParams.get("program_id");
     return f;
   });
 
@@ -42,6 +45,10 @@ export const SearchResultsPage: React.FC = () => {
     const t = (searchParams.get("type") as any) || "all";
     if (t !== activeType) {
       setActiveType(t);
+    }
+    const pid = searchParams.get("program_id");
+    if (pid) {
+      setFilters((prev) => ({ ...prev, program_id: pid }));
     }
   }, [searchParams]);
 
@@ -105,6 +112,9 @@ export const SearchResultsPage: React.FC = () => {
   const handleClearFilters = () => {
     setFilters({});
     setPage(1);
+    const params = new URLSearchParams(searchParams);
+    ["genre", "channel_name", "is_free", "content_tier", "program_id"].forEach((k) => params.delete(k));
+    setSearchParams(params, { replace: true });
   };
 
   const mediaTabs = [
@@ -230,6 +240,7 @@ export const SearchResultsPage: React.FC = () => {
               <option value="">Relevance</option>
               {(activeType === "episodes" || activeType === "all") && (
                 <>
+                  <option value="episode_number:asc">Episode Sequence (Ep 1, 2...)</option>
                   <option value="views:desc">Most Viewed</option>
                   <option value="duration_seconds:desc">Longest Duration</option>
                   <option value="duration_seconds:asc">Shortest Duration</option>

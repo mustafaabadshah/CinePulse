@@ -64,7 +64,7 @@ export const Navbar: React.FC = () => {
               alignItems: "center",
               gap: "6px"
             }}>
-              <span>Tamasha</span>
+              <span>CinePulse</span>
               <span style={{
                 fontSize: "0.75rem",
                 fontWeight: 700,
@@ -75,7 +75,7 @@ export const Navbar: React.FC = () => {
                 borderRadius: "4px",
                 padding: "1px 5px"
               }}>
-                Explorer
+                OTT
               </span>
             </div>
             <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "-2px" }}>

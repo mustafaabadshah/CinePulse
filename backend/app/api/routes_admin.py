@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -13,9 +13,10 @@ from app.config import settings
 from app.core.database import get_db
 from app.core.logging import logger
 from app.core.security import verify_admin_key
-from app.models import Episode, ImportJob, Program
+from app.models import Episode, ImportJob, MediaArtwork, Program
 from app.schemas.import_job import ImportJobRead
 from app.search.client import get_meili_client
+from app.services.data_normalizer import normalize_thumbnail_url
 from app.search.indexes import (
     ALL_INDEXES,
     INDEX_EPISODES,
@@ -207,3 +208,131 @@ def trigger_reindex(db: Session = Depends(get_db)) -> Dict[str, Any]:
     """Rebuilds the media search indexes directly from the canonical database."""
     client = get_meili_client()
     return rebuild_media_indexes_from_db(db, client)
+
+
+@router.get("/artwork")
+def list_media_artwork(
+    status: Optional[str] = Query(default=None),
+    entity_type: Optional[str] = Query(default=None),
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    """Lists media artwork entries for administrative review and audit."""
+    q = db.query(MediaArtwork)
+    if status:
+        q = q.filter(MediaArtwork.verification_status == status)
+    if entity_type:
+        q = q.filter(MediaArtwork.entity_type == entity_type)
+
+    total = q.count()
+    items = q.order_by(MediaArtwork.id.desc()).offset(offset).limit(limit).all()
+
+    return {
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+        "items": [
+            {
+                "id": a.id,
+                "entity_id": a.entity_id,
+                "entity_type": a.entity_type,
+                "artwork_url": a.artwork_url,
+                "artwork_source": a.artwork_source,
+                "artwork_type": a.artwork_type,
+                "verification_status": a.verification_status,
+                "match_confidence": a.match_confidence,
+                "failure_reason": a.failure_reason,
+                "last_checked": a.last_checked.isoformat() if a.last_checked else None,
+                "created_at": a.created_at.isoformat(),
+            }
+            for a in items
+        ],
+    }
+
+
+@router.post("/artwork/approve")
+def approve_media_artwork(payload: Dict[str, Any], db: Session = Depends(get_db)) -> Dict[str, Any]:
+    """Approves a candidate artwork match and marks it verified."""
+    artwork_id = payload.get("id")
+    if not artwork_id:
+        raise HTTPException(status_code=400, detail="Missing artwork 'id'.")
+
+    art = db.query(MediaArtwork).filter(MediaArtwork.id == artwork_id).first()
+    if not art:
+        raise HTTPException(status_code=404, detail=f"Artwork record '{artwork_id}' not found.")
+
+    art.verification_status = "verified"
+    art.last_checked = datetime.now(timezone.utc)
+    db.commit()
+
+    return {"status": "approved", "id": art.id, "verification_status": art.verification_status}
+
+
+@router.post("/artwork/reject")
+def reject_media_artwork(payload: Dict[str, Any], db: Session = Depends(get_db)) -> Dict[str, Any]:
+    """Rejects an artwork match and records the reason."""
+    artwork_id = payload.get("id")
+    reason = payload.get("reason", "Rejected by administrator")
+    if not artwork_id:
+        raise HTTPException(status_code=400, detail="Missing artwork 'id'.")
+
+    art = db.query(MediaArtwork).filter(MediaArtwork.id == artwork_id).first()
+    if not art:
+        raise HTTPException(status_code=404, detail=f"Artwork record '{artwork_id}' not found.")
+
+    art.verification_status = "failed"
+    art.failure_reason = reason
+    art.last_checked = datetime.now(timezone.utc)
+    db.commit()
+
+    return {"status": "rejected", "id": art.id, "failure_reason": art.failure_reason}
+
+
+@router.post("/artwork/sync-inherited")
+def sync_inherited_artwork(db: Session = Depends(get_db)) -> Dict[str, Any]:
+    """Scans all programs and seeds verified artwork from child episodes."""
+    programs = db.query(Program).all()
+    created_count = 0
+    updated_count = 0
+
+    for prog in programs:
+        first_ep = (
+            db.query(Episode)
+            .filter(Episode.program_id == prog.id, Episode.thumbnail.isnot(None))
+            .order_by(Episode.episode_number.asc().nulls_last(), Episode.views.desc())
+            .first()
+        )
+        if first_ep and first_ep.thumbnail:
+            norm_url = normalize_thumbnail_url(first_ep.thumbnail)
+            existing = db.query(MediaArtwork).filter(
+                MediaArtwork.entity_id == prog.id,
+                MediaArtwork.entity_type == "program"
+            ).first()
+
+            if not existing:
+                new_art = MediaArtwork(
+                    entity_id=prog.id,
+                    entity_type="program",
+                    artwork_url=norm_url,
+                    artwork_source="child_episode",
+                    artwork_type="poster",
+                    verification_status="verified",
+                    match_confidence=1.0,
+                    last_checked=datetime.now(timezone.utc),
+                )
+                db.add(new_art)
+                created_count += 1
+            else:
+                existing.artwork_url = norm_url
+                existing.verification_status = "verified"
+                existing.last_checked = datetime.now(timezone.utc)
+                updated_count += 1
+
+    db.commit()
+    return {
+        "status": "completed",
+        "total_programs": len(programs),
+        "created_records": created_count,
+        "updated_records": updated_count,
+    }

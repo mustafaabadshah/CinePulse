@@ -35,6 +35,7 @@ export interface Episode {
   id: string;
   title: string;
   slug: string;
+  episode_number?: number;
   description?: string;
   program_id?: string;
   raw_program_id?: string;
@@ -59,7 +60,9 @@ export interface Episode {
   sibling_episodes?: {
     id: string;
     title: string;
+    episode_number?: number;
     duration?: string;
+    duration_seconds?: number;
     views: number;
     thumbnail?: string;
     is_free: boolean;
@@ -83,11 +86,13 @@ export interface Program {
   imported_at?: string;
   created_at: string;
   updated_at: string;
+  thumbnail?: string;
   episode_count?: number;
   episodes?: {
     id: string;
     title: string;
     slug: string;
+    episode_number?: number;
     duration?: string;
     duration_seconds?: number;
     views: number;

@@ -1,0 +1,233 @@
+{
+  "timestamp": "2026-10-26T11:08:11.878385+00:00",
+  "mode": "apply",
+  "total_episodes": 6547,
+  "already_clean_count": 6467,
+  "deterministic_repairs_count": 16,
+  "ambiguous_count": 64,
+  "source_csv_unmodified": true,
+  "deterministic_repairs": [
+    {
+      "id": "233443",
+      "title": "Episode 49 \u2013 Loving Couple, Pakistani Music, Double Standards & Tauba Tauba Fever",
+      "old_duration": "387",
+      "new_duration": "06:27",
+      "old_duration_seconds": 387,
+      "new_duration_seconds": 387,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233679",
+      "title": "Episode 3 : Strawberry Farming NEW",
+      "old_duration": "1538",
+      "new_duration": "25:38",
+      "old_duration_seconds": 1538,
+      "new_duration_seconds": 1538,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233683",
+      "title": "Cities of Pakistan EP 04",
+      "old_duration": "1334",
+      "new_duration": "22:14",
+      "old_duration_seconds": 1334,
+      "new_duration_seconds": 1334,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233687",
+      "title": "Cities of Pakistan EP 05",
+      "old_duration": "198",
+      "new_duration": "03:18",
+      "old_duration_seconds": 198,
+      "new_duration_seconds": 198,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233695",
+      "title": "Test Episodes Transcoder 01",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233699",
+      "title": "Test Episodes Transcoder 02",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233703",
+      "title": "Test Episodes Transcoder 03",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233707",
+      "title": "Test Episodes Transcoder 04",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233711",
+      "title": "Test Episodes Transcoder 05",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "233715",
+      "title": "Test Episodes Transcoder 06",
+      "old_duration": "3269",
+      "new_duration": "54:29",
+      "old_duration_seconds": 3269,
+      "new_duration_seconds": 3269,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236371",
+      "title": "Tamasha News 21 OCT-2026-6PM News Bulletin",
+      "old_duration": "513",
+      "new_duration": "08:33",
+      "old_duration_seconds": 513,
+      "new_duration_seconds": 513,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236375",
+      "title": "Tamasha News 21 OCT-2026-9PM News Bulletin",
+      "old_duration": "495",
+      "new_duration": "08:15",
+      "old_duration_seconds": 495,
+      "new_duration_seconds": 495,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236379",
+      "title": "Tamasha News 21 OCT-2026-9AM News Bulletin",
+      "old_duration": "254",
+      "new_duration": "04:14",
+      "old_duration_seconds": 254,
+      "new_duration_seconds": 254,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236383",
+      "title": "Tamasha News 22 OCT-2026-9AM News Bulletin",
+      "old_duration": "283",
+      "new_duration": "04:43",
+      "old_duration_seconds": 283,
+      "new_duration_seconds": 283,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236387",
+      "title": "Tamasha News 22 OCT-2026-6PM News Bulletin",
+      "old_duration": "283",
+      "new_duration": "04:43",
+      "old_duration_seconds": 283,
+      "new_duration_seconds": 283,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    },
+    {
+      "id": "236395",
+      "title": "Tamasha News 22 OCT-2026-9PM News Bulletin",
+      "old_duration": "492",
+      "new_duration": "08:12",
+      "old_duration_seconds": 492,
+      "new_duration_seconds": 492,
+      "reason": "Pure integer seconds normalized to standard MM:SS clock format",
+      "confidence": 1.0
+    }
+  ],
+  "sample_ambiguous": [
+    {
+      "id": "131252",
+      "title": "Mercedes-Benz Senzati Jet Class",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "143152",
+      "title": "Paper Animals",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "143214",
+      "title": "Paper Parrot",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "143215",
+      "title": "Paper Animals",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "203233",
+      "title": "Rizwan & Abdullah Superheroes | PAK vs SL CWC23\u00a0|\u00a0Caught\u00a0Behind",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "208409",
+      "title": "EP 2 - Babar's 68 in vain & KK woes continue",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "208414",
+      "title": "EP 3 - LQ's lose again as Nafay shines for QG",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "208417",
+      "title": "EP 4 - Islu fall short against Sultan's",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "208432",
+      "title": "EP 5 - Ifthikar's fire ensures Sultans victory",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    },
+    {
+      "id": "208475",
+      "title": "EP 10 - Qalandar's Dream Alive Make or Break Moment",
+      "duration": null,
+      "reason": "Null or empty duration in source catalog - preserved as missing"
+    }
+  ]
+}

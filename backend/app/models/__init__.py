@@ -5,6 +5,7 @@ from app.models.base import TimestampMixin
 from app.models.episode import Episode
 from app.models.import_job import ImportJob
 from app.models.program import Program
+from app.models.artwork import MediaArtwork
 
 __all__ = [
     "Base",
@@ -12,4 +13,5 @@ __all__ = [
     "Program",
     "Episode",
     "ImportJob",
+    "MediaArtwork",
 ]

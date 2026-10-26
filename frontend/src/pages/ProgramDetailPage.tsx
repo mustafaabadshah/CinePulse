@@ -13,10 +13,13 @@ import {
 } from "lucide-react";
 import { getProgram } from "../api/client";
 import { Program } from "../types";
+import { formatDuration } from "../utils/formatDuration";
+import { MediaImage } from "../components/MediaImage";
 
 export const ProgramDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [program, setProgram] = useState<Program | null>(null);
+  const [episodeSort, setEpisodeSort] = useState<"sequence" | "views">("sequence");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,11 +27,11 @@ export const ProgramDetailPage: React.FC = () => {
     if (!id) return;
     setLoading(true);
     setError(null);
-    getProgram(id)
+    getProgram(id, episodeSort)
       .then((data) => setProgram(data))
       .catch((err) => setError(err.message || "Failed to load program details."))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, episodeSort]);
 
   if (loading) {
     return (
@@ -87,7 +90,19 @@ export const ProgramDetailPage: React.FC = () => {
 
       {/* Program Header Card */}
       <article className="card-glass animate-fade-in" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "24px" }}>
-        <div>
+        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", alignItems: "flex-start" }}>
+          {/* Program Poster */}
+          <div style={{ width: "160px", flexShrink: 0, borderRadius: "10px", overflow: "hidden" }}>
+            <MediaImage
+              src={program.thumbnail || (program.episodes && program.episodes[0]?.thumbnail)}
+              alt={program.name}
+              type={program.type === "channel" ? "channel" : "program"}
+              aspectRatio="3 / 4"
+              title={program.name}
+            />
+          </div>
+
+          <div style={{ flex: 1, minWidth: "260px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
             <span className="badge badge-program">
               <Tv size={12} />
@@ -144,8 +159,9 @@ export const ProgramDetailPage: React.FC = () => {
             {program.name}
           </h1>
 
-          <div style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
-            Slug: <code style={{ color: "#93c5fd" }}>{program.slug}</code> • ID: <code>{program.id}</code>
+            <div style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
+              Slug: <code style={{ color: "#93c5fd" }}>{program.slug}</code> • ID: <code>{program.id}</code>
+            </div>
           </div>
         </div>
 
@@ -186,10 +202,49 @@ export const ProgramDetailPage: React.FC = () => {
 
         {/* Child Episodes List */}
         <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "8px" }}>
-            <h2 style={{ fontSize: "1.3rem", fontWeight: 600 }}>
-              Episodes ({program.episode_count || 0})
-            </h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "10px", flexWrap: "wrap", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>
+                Episodes ({program.episode_count || 0})
+              </h2>
+
+              {/* Sequence Sorting Control */}
+              <div style={{ display: "flex", gap: "6px", background: "rgba(255, 255, 255, 0.05)", padding: "3px", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                <button
+                  onClick={() => setEpisodeSort("sequence")}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.78rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    border: "none",
+                    background: episodeSort === "sequence" ? "var(--accent-red)" : "transparent",
+                    color: episodeSort === "sequence" ? "#ffffff" : "var(--text-muted)",
+                    transition: "all var(--transition-fast)",
+                  }}
+                >
+                  Chronological Order
+                </button>
+                <button
+                  onClick={() => setEpisodeSort("views")}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.78rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    border: "none",
+                    background: episodeSort === "views" ? "var(--accent-red)" : "transparent",
+                    color: episodeSort === "views" ? "#ffffff" : "var(--text-muted)",
+                    transition: "all var(--transition-fast)",
+                  }}
+                >
+                  Most Viewed
+                </button>
+              </div>
+            </div>
+
             <Link
               to={`/search?type=episodes&program_id=${encodeURIComponent(program.id)}`}
               style={{ color: "#60a5fa", fontSize: "0.88rem", fontWeight: 500 }}
@@ -213,11 +268,34 @@ export const ProgramDetailPage: React.FC = () => {
                     textDecoration: "none",
                   }}
                 >
-                  {ep.thumbnail && (
-                    <div style={{ width: "100%", height: "120px", borderRadius: "8px", overflow: "hidden", background: "#000" }}>
-                      <img src={ep.thumbnail} alt={ep.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                  )}
+                  <div style={{ width: "100%", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
+                    <MediaImage
+                      src={ep.thumbnail}
+                      alt={ep.title}
+                      type="episode"
+                      aspectRatio="16 / 9"
+                      showPlayBadge={true}
+                    />
+                    {ep.episode_number !== undefined && ep.episode_number !== null && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "6px",
+                          left: "6px",
+                          background: "rgba(0, 0, 0, 0.75)",
+                          color: "#ffffff",
+                          fontSize: "0.72rem",
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          border: "1px solid rgba(255, 255, 255, 0.15)",
+                          zIndex: 2,
+                        }}
+                      >
+                        EP {ep.episode_number}
+                      </div>
+                    )}
+                  </div>
 
                   <h3
                     style={{
@@ -239,7 +317,7 @@ export const ProgramDetailPage: React.FC = () => {
                     {ep.duration && (
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                         <Clock size={11} />
-                        {ep.duration}
+                        {formatDuration(ep.duration_seconds, ep.duration)}
                       </span>
                     )}
                     <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>

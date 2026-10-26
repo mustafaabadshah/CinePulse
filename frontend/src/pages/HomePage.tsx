@@ -10,10 +10,11 @@ import {
   ArrowRight,
   TrendingUp,
   Flame,
-  Film,
 } from "lucide-react";
 import { search } from "../api/client";
 import { SearchResultItem } from "../types";
+import { formatDuration } from "../utils/formatDuration";
+import { MediaImage, resolveImageUrl } from "../components/MediaImage";
 
 export const HomePage: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -195,7 +196,7 @@ export const HomePage: React.FC = () => {
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundImage: `url(${spotlight.thumbnail})`,
+                backgroundImage: `url(${resolveImageUrl(spotlight.thumbnail)})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center 20%",
                 filter: "brightness(0.38) blur(1px)",
@@ -351,96 +352,75 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="shelf-scroll">
-          {popularEpisodes.map((item) => (
-            <div key={item.id} className="shelf-item">
-              <Link to={`/episodes/${encodeURIComponent(item.id)}`} className="media-card" style={{ height: "100%" }}>
-                <div className="media-card-thumb">
-                  {item.thumbnail ? (
-                    <img src={item.thumbnail} alt={item.title} loading="lazy" />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "#141923",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      <Film size={28} />
-                    </div>
-                  )}
-                  <div className="media-card-play-overlay">
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        background: "var(--accent-red)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Play size={16} fill="#ffffff" color="#ffffff" style={{ marginLeft: "2px" }} />
-                    </div>
-                  </div>
-                  {/* View count pill */}
-                  {item.views !== undefined && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: "8px",
-                        right: "8px",
-                        background: "rgba(0, 0, 0, 0.75)",
-                        padding: "2px 7px",
-                        borderRadius: "4px",
-                        fontSize: "0.72rem",
-                        color: "#ffffff",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {formatViews(item.views)} views
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-                    <span className={`badge ${item.is_free ? "badge-free" : "badge-pro"}`}>
-                      <span>{item.is_free ? "Free" : "Pro"}</span>
-                    </span>
-                    {item.duration && (
-                      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{item.duration}</span>
+          {popularEpisodes.map((item) => {
+            const dur = formatDuration(item.duration_seconds, item.duration);
+            return (
+              <div key={item.id} className="shelf-item">
+                <Link to={`/episodes/${encodeURIComponent(item.id)}`} className="media-card" style={{ height: "100%" }}>
+                  <div className="media-card-thumb" style={{ position: "relative" }}>
+                    <MediaImage
+                      src={item.thumbnail}
+                      alt={item.title}
+                      type="episode"
+                      aspectRatio="16 / 9"
+                      showPlayBadge={true}
+                    />
+                    {/* View count pill */}
+                    {item.views !== undefined && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "8px",
+                          right: "8px",
+                          background: "rgba(0, 0, 0, 0.75)",
+                          padding: "2px 7px",
+                          borderRadius: "4px",
+                          fontSize: "0.72rem",
+                          color: "#ffffff",
+                          fontWeight: 600,
+                          zIndex: 2,
+                        }}
+                      >
+                        {formatViews(item.views)} views
+                      </div>
                     )}
                   </div>
 
-                  <h4
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 700,
-                      color: "#ffffff",
-                      lineHeight: 1.35,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {item.title}
-                  </h4>
-
-                  {item.program_name && (
-                    <div style={{ fontSize: "0.8rem", color: "var(--accent-red)", fontWeight: 600 }}>
-                      {item.program_name}
+                  <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                      <span className={`badge ${item.is_free ? "badge-free" : "badge-pro"}`}>
+                        <span>{item.is_free ? "Free" : "Pro"}</span>
+                      </span>
+                      {dur && (
+                        <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{dur}</span>
+                      )}
                     </div>
-                  )}
-                </div>
-              </Link>
-            </div>
-          ))}
+
+                    <h4
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        lineHeight: 1.35,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {item.title}
+                    </h4>
+
+                    {item.program_name && (
+                      <div style={{ fontSize: "0.8rem", color: "var(--accent-red)", fontWeight: 600 }}>
+                        {item.program_name}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -590,70 +570,48 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="shelf-scroll">
-          {freeEpisodes.map((item) => (
-            <div key={item.id} className="shelf-item">
-              <Link to={`/episodes/${encodeURIComponent(item.id)}`} className="media-card" style={{ height: "100%" }}>
-                <div className="media-card-thumb">
-                  {item.thumbnail ? (
-                    <img src={item.thumbnail} alt={item.title} loading="lazy" />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "#141923",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      <Film size={28} />
-                    </div>
-                  )}
-                  <div className="media-card-play-overlay">
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        background: "var(--accent-red)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Play size={16} fill="#ffffff" color="#ffffff" style={{ marginLeft: "2px" }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-                    <span className="badge badge-free">Free</span>
-                    {item.duration && (
-                      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{item.duration}</span>
-                    )}
+          {freeEpisodes.map((item) => {
+            const dur = formatDuration(item.duration_seconds, item.duration);
+            return (
+              <div key={item.id} className="shelf-item">
+                <Link to={`/episodes/${encodeURIComponent(item.id)}`} className="media-card" style={{ height: "100%" }}>
+                  <div className="media-card-thumb">
+                    <MediaImage
+                      src={item.thumbnail}
+                      alt={item.title}
+                      type="episode"
+                      aspectRatio="16 / 9"
+                      showPlayBadge={true}
+                    />
                   </div>
 
-                  <h4
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 700,
-                      color: "#ffffff",
-                      lineHeight: 1.35,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {item.title}
-                  </h4>
-                </div>
-              </Link>
-            </div>
-          ))}
+                  <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "6px", flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                      <span className="badge badge-free">Free</span>
+                      {dur && (
+                        <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{dur}</span>
+                      )}
+                    </div>
+
+                    <h4
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        lineHeight: 1.35,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {item.title}
+                    </h4>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>

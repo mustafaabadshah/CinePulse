@@ -50,8 +50,8 @@ export async function getEpisode(id: string): Promise<Episode> {
   return res.json();
 }
 
-export async function getProgram(id: string): Promise<Program> {
-  const res = await fetch(`${API_BASE}/programs/${encodeURIComponent(id)}`);
+export async function getProgram(id: string, sort: string = "sequence"): Promise<Program> {
+  const res = await fetch(`${API_BASE}/programs/${encodeURIComponent(id)}?sort=${encodeURIComponent(sort)}`);
   if (!res.ok) {
     throw new Error(`Failed to load program: ${res.statusText}`);
   }

@@ -1,0 +1,252 @@
+[
+  {
+    "id": "102536",
+    "title": "Muhabbat Khel Tamasha | Teaser 3 | TV One Drama",
+    "program": "Teasers",
+    "raw_csv_duration": "00:00:39",
+    "sqlite_duration": "00:00:39",
+    "sqlite_duration_seconds": 39,
+    "api_value": "duration='00:00:39', duration_seconds=39",
+    "current_ui_display": "00:00:39"
+  },
+  {
+    "id": "102537",
+    "title": "Muhabbat Khel Tamasha | Teaser 2 | TV One Drama",
+    "program": "Teasers",
+    "raw_csv_duration": "00:00:39",
+    "sqlite_duration": "00:00:39",
+    "sqlite_duration_seconds": 39,
+    "api_value": "duration='00:00:39', duration_seconds=39",
+    "current_ui_display": "00:00:39"
+  },
+  {
+    "id": "103413",
+    "title": "Fashion Pakistan Week | Teaser 2 |  TV One Fashion",
+    "program": "Teasers",
+    "raw_csv_duration": "00:00:32",
+    "sqlite_duration": "00:00:32",
+    "sqlite_duration_seconds": 32,
+    "api_value": "duration='00:00:32', duration_seconds=32",
+    "current_ui_display": "00:00:32"
+  },
+  {
+    "id": "225711",
+    "title": "Rap Icon Pakistan| EP 02|Promo",
+    "program": "Rap Icon Pakistan 2026",
+    "raw_csv_duration": "00:00:39",
+    "sqlite_duration": "00:00:39",
+    "sqlite_duration_seconds": 39,
+    "api_value": "duration='00:00:39', duration_seconds=39",
+    "current_ui_display": "00:00:39"
+  },
+  {
+    "id": "131419",
+    "title": "Ehd E Wafa | Episode 1",
+    "program": "Ehd E Wafa",
+    "raw_csv_duration": "00:39:30",
+    "sqlite_duration": "00:39:30",
+    "sqlite_duration_seconds": 2370,
+    "api_value": "duration='00:39:30', duration_seconds=2370",
+    "current_ui_display": "00:39:30"
+  },
+  {
+    "id": "131420",
+    "title": "Ehd E Wafa | Episode 2",
+    "program": "Ehd E Wafa",
+    "raw_csv_duration": "00:41:32",
+    "sqlite_duration": "00:41:32",
+    "sqlite_duration_seconds": 2492,
+    "api_value": "duration='00:41:32', duration_seconds=2492",
+    "current_ui_display": "00:41:32"
+  },
+  {
+    "id": "131422",
+    "title": "Ehd E Wafa | Episode 4",
+    "program": "Ehd E Wafa",
+    "raw_csv_duration": "00:37:26",
+    "sqlite_duration": "00:37:26",
+    "sqlite_duration_seconds": 2246,
+    "api_value": "duration='00:37:26', duration_seconds=2246",
+    "current_ui_display": "00:37:26"
+  },
+  {
+    "id": "205355",
+    "title": "Ranjha Ranjha Kardi Ep 03",
+    "program": "Ranjha Ranjha Kardi",
+    "raw_csv_duration": "00:37:32",
+    "sqlite_duration": "00:37:32",
+    "sqlite_duration_seconds": 2252,
+    "api_value": "duration='00:37:32', duration_seconds=2252",
+    "current_ui_display": "00:37:32"
+  },
+  {
+    "id": "205579",
+    "title": "Raqs E Bismil Ep 20",
+    "program": "Raqs E Bismil",
+    "raw_csv_duration": "00:36:32",
+    "sqlite_duration": "00:36:32",
+    "sqlite_duration_seconds": 2192,
+    "api_value": "duration='00:36:32', duration_seconds=2192",
+    "current_ui_display": "00:36:32"
+  },
+  {
+    "id": "233679",
+    "title": "Episode 3 : Strawberry Farming NEW",
+    "program": "kissan ka pakistan - Season 1",
+    "raw_csv_duration": "1538",
+    "sqlite_duration": "1538",
+    "sqlite_duration_seconds": 1538,
+    "api_value": "duration='1538', duration_seconds=1538",
+    "current_ui_display": "1538"
+  },
+  {
+    "id": "233443",
+    "title": "Episode 49 \u2013 Loving Couple, Pakistani Music, Double Standards & Tauba Tauba Fever",
+    "program": "Street Food",
+    "raw_csv_duration": "387",
+    "sqlite_duration": "387",
+    "sqlite_duration_seconds": 387,
+    "api_value": "duration='387', duration_seconds=387",
+    "current_ui_display": "387"
+  },
+  {
+    "id": "233683",
+    "title": "Cities of Pakistan EP 04",
+    "program": "Exclusive Documentaries - Cities of  pakistan",
+    "raw_csv_duration": "1334",
+    "sqlite_duration": "1334",
+    "sqlite_duration_seconds": 1334,
+    "api_value": "duration='1334', duration_seconds=1334",
+    "current_ui_display": "1334"
+  },
+  {
+    "id": "233695",
+    "title": "Test Episodes Transcoder 01",
+    "program": "Suno Jano",
+    "raw_csv_duration": "3269",
+    "sqlite_duration": "3269",
+    "sqlite_duration_seconds": 3269,
+    "api_value": "duration='3269', duration_seconds=3269",
+    "current_ui_display": "3269"
+  },
+  {
+    "id": "236371",
+    "title": "Tamasha News 21 OCT-2026-6PM News Bulletin",
+    "program": "Tamasha News Archives",
+    "raw_csv_duration": "513",
+    "sqlite_duration": "513",
+    "sqlite_duration_seconds": 513,
+    "api_value": "duration='513', duration_seconds=513",
+    "current_ui_display": "513"
+  },
+  {
+    "id": "236383",
+    "title": "Tamasha News 22 OCT-2026-9AM News Bulletin",
+    "program": "Tamasha News Archives",
+    "raw_csv_duration": "283",
+    "sqlite_duration": "283",
+    "sqlite_duration_seconds": 283,
+    "api_value": "duration='283', duration_seconds=283",
+    "current_ui_display": "283"
+  },
+  {
+    "id": "132021",
+    "title": "112 - Al Ikhlas",
+    "program": "Surah",
+    "raw_csv_duration": "00:00:21",
+    "sqlite_duration": "00:00:21",
+    "sqlite_duration_seconds": 21,
+    "api_value": "duration='00:00:21', duration_seconds=21",
+    "current_ui_display": "00:00:21"
+  },
+  {
+    "id": "132020",
+    "title": "113 - Al Falaq",
+    "program": "Surah",
+    "raw_csv_duration": "00:00:33",
+    "sqlite_duration": "00:00:33",
+    "sqlite_duration_seconds": 33,
+    "api_value": "duration='00:00:33', duration_seconds=33",
+    "current_ui_display": "00:00:33"
+  },
+  {
+    "id": "132019",
+    "title": "114 - Al Naas",
+    "program": "Surah",
+    "raw_csv_duration": "00:00:50",
+    "sqlite_duration": "00:00:50",
+    "sqlite_duration_seconds": 50,
+    "api_value": "duration='00:00:50', duration_seconds=50",
+    "current_ui_display": "00:00:50"
+  },
+  {
+    "id": "132153",
+    "title": "1 - Al Fatihah",
+    "program": "Surah",
+    "raw_csv_duration": "00:00:54",
+    "sqlite_duration": "00:00:54",
+    "sqlite_duration_seconds": 54,
+    "api_value": "duration='00:00:54', duration_seconds=54",
+    "current_ui_display": "00:00:54"
+  },
+  {
+    "id": "214152",
+    "title": "Understanding Islam and Post Modernism Ft. Sahil Adeem - How Does it Work Podcast",
+    "program": "Understanding Islam and Post Modernism Ft. Sahil Adeem - How Does it Work Podcast",
+    "raw_csv_duration": "01:19:39",
+    "sqlite_duration": "01:19:39",
+    "sqlite_duration_seconds": 4779,
+    "api_value": "duration='01:19:39', duration_seconds=4779",
+    "current_ui_display": "01:19:39"
+  },
+  {
+    "id": "214174",
+    "title": "Who Won The 1965 War between India and Pakistan Ft. Hamid Mir - How Does it Work Podcast",
+    "program": "Who Won The 1965 War between India and Pakistan Ft. Hamid Mir - How Does it Work Podcast",
+    "raw_csv_duration": "01:01:32",
+    "sqlite_duration": "01:01:32",
+    "sqlite_duration_seconds": 3692,
+    "api_value": "duration='01:01:32', duration_seconds=3692",
+    "current_ui_display": "01:01:32"
+  },
+  {
+    "id": "131252",
+    "title": "Mercedes-Benz Senzati Jet Class",
+    "program": "Mercedes-Benz Senzati Jet Class",
+    "raw_csv_duration": "",
+    "sqlite_duration": null,
+    "sqlite_duration_seconds": null,
+    "api_value": "duration='None', duration_seconds=None",
+    "current_ui_display": "\u2014"
+  },
+  {
+    "id": "143152",
+    "title": "Paper Animals",
+    "program": "Do It Yoursef!",
+    "raw_csv_duration": "",
+    "sqlite_duration": null,
+    "sqlite_duration_seconds": null,
+    "api_value": "duration='None', duration_seconds=None",
+    "current_ui_display": "\u2014"
+  },
+  {
+    "id": "203233",
+    "title": "Rizwan & Abdullah Superheroes | PAK vs SL CWC23\u00a0|\u00a0Caught\u00a0Behind",
+    "program": "Caught Behind",
+    "raw_csv_duration": "",
+    "sqlite_duration": null,
+    "sqlite_duration_seconds": null,
+    "api_value": "duration='None', duration_seconds=None",
+    "current_ui_display": "\u2014"
+  },
+  {
+    "id": "214294",
+    "title": "PAK vs NZ Innings 1 Highlights",
+    "program": "ICC Champions Trophy 2025 Highlights",
+    "raw_csv_duration": "",
+    "sqlite_duration": null,
+    "sqlite_duration_seconds": null,
+    "api_value": "duration='None', duration_seconds=None",
+    "current_ui_display": "\u2014"
+  }
+]

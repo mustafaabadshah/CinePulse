@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
               gap: "8px"
             }}>
               <Film size={18} color="var(--accent-red)" />
-              <span>Tamasha Catalog Explorer</span>
+              <span>CinePulse OTT Explorer</span>
             </div>
             <p style={{ maxWidth: "480px", lineHeight: "1.6" }}>
               High-performance OTT media discovery platform powered by Meilisearch and canonical SQLite storage.

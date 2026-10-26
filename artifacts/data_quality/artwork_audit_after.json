@@ -1,0 +1,326 @@
+{
+  "summary": {
+    "programs": {
+      "total_programs": 634,
+      "direct_artwork_columns_in_csv": 0,
+      "programs_with_direct_csv_artwork": 0,
+      "programs_with_child_episode_artwork": 502,
+      "programs_without_episodes": 132,
+      "programs_with_episodes_but_no_artwork": 0,
+      "inherited_artwork_coverage_pct": 79.2
+    },
+    "episodes": {
+      "total_episodes": 6547,
+      "with_thumbnail_url": 6547,
+      "missing_thumbnail_url": 0,
+      "coverage_pct": 100.0,
+      "normalized_s3_coverage_pct": 100.0,
+      "top_hostnames": {
+        "malformed": 6292,
+        "srv2.jazztv.pk": 241,
+        "tamasha-app-images.s3.amazonaws.com": 9,
+        "images.mjunoon.tv:8181": 5
+      }
+    },
+    "network_sample_verification": {
+      "sample_size": 30,
+      "accessible": 30,
+      "failed_or_blocked": 0,
+      "accessible_pct": 100.0
+    }
+  },
+  "sample_network_results": {
+    "uploads/episodes/GjKyw1XqeX8.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/GjKyw1XqeX8.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/XvLAlD9GqbM.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/XvLAlD9GqbM.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/tKhiBn9goqj.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/tKhiBn9goqj.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/ajc2wbBrg5m.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/ajc2wbBrg5m.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "https://srv2.jazztv.pk/jazzlive/uploads/episodes/cOKX0B9neah.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/cOKX0B9neah.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/rUQ6PWc8S2j.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/rUQ6PWc8S2j.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/WC2fzGtFkEo.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/WC2fzGtFkEo.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/Yk404UaIYsn.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/Yk404UaIYsn.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/MxyrdYmX58K.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/MxyrdYmX58K.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/l06qBS58lkM.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/l06qBS58lkM.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/LYzCoSbhmnQ.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/LYzCoSbhmnQ.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/1GOJO76TNnH.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/1GOJO76TNnH.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/4z8KCBSIDz8.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/4z8KCBSIDz8.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/ZcdkMpYhlmb.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/ZcdkMpYhlmb.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/RX07xQN8iAi.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/RX07xQN8iAi.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/jJpP0SIOQwi.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/jJpP0SIOQwi.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/QRyHuROcHKn.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/QRyHuROcHKn.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/3uF02ymmkBS.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/3uF02ymmkBS.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/BCafGJ2jkHq.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/BCafGJ2jkHq.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/qq0yKgZPrwJ.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/qq0yKgZPrwJ.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/UrTFMMaXotm.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/UrTFMMaXotm.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/BTbBQEke5sW.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/BTbBQEke5sW.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/iOPDcB1Ne4M.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/iOPDcB1Ne4M.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/NezJqCjit5P.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/NezJqCjit5P.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/208GWCbgWV3.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/208GWCbgWV3.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/x67oSNVSFSM.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/x67oSNVSFSM.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/ABKpqbXlj98.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/ABKpqbXlj98.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/iVVoM2RPoRL.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/iVVoM2RPoRL.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/4iT06mbFQwi.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/4iT06mbFQwi.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    },
+    "uploads/episodes/XtCc1nTC7TN.webp": {
+      "normalized_url": "https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/XtCc1nTC7TN.webp",
+      "status": "ok",
+      "code": 200,
+      "content_type": "image/webp",
+      "accessible": true
+    }
+  },
+  "top_reused_thumbnails": [
+    [
+      "nothumbnail",
+      504
+    ],
+    [
+      "uploads/episodes/sKuLaTwNOmF.webp",
+      2
+    ],
+    [
+      "uploads/episodes/zz7vpyTF2aR.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zyeC26YUaQk.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zxC6kE6nHDT.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zwvSRAbsZAm.webp",
+      1
+    ],
+    [
+      "uploads/episodes/ztT1zKxPhOg.webp",
+      1
+    ],
+    [
+      "uploads/episodes/ztKUtaDh5lQ.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zt3ElFsIVL6.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zsQbSCisUOf.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zsOg48QEhwK.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zqzATkdhSwx.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zphkSGVcgzo.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zoRWny4MvzS.webp",
+      1
+    ],
+    [
+      "uploads/episodes/znuw1t0LXlH.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zmMsfuMKxvH.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zm3coRHHE5K.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zlDpgDb3kAx.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zkMzpmA3zjp.webp",
+      1
+    ],
+    [
+      "uploads/episodes/zjuT41MOXoB.webp",
+      1
+    ]
+  ]
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Play,
@@ -7,17 +7,16 @@ import {
   Clock,
   Eye,
   Users,
-  Film,
 } from "lucide-react";
 import { SearchResultItem } from "../types";
+import { formatDuration, isTeaserOrClip } from "../utils/formatDuration";
+import { MediaImage } from "./MediaImage";
 
 interface SearchCardProps {
   item: SearchResultItem;
 }
 
 export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
-  const [imageFailed, setImageFailed] = useState(false);
-
   const isEpisode = item.type === "episode";
   const isChannel = !isEpisode && (item.raw?.type === "channel" || item.raw?.info_content_type === "channel");
   
@@ -38,6 +37,8 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
   };
 
   const thumbnail = item.thumbnail || item.raw?.thumbnail;
+  const durationText = formatDuration(item.duration_seconds, item.duration);
+  const isTeaser = isEpisode && isTeaserOrClip(item.duration_seconds);
 
   return (
     <article
@@ -74,6 +75,21 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           {/* Episode Specific Badges */}
           {isEpisode && (
             <>
+              {item.raw?.episode_number !== undefined && item.raw?.episode_number !== null && (
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    padding: "2px 7px",
+                    borderRadius: "4px",
+                    background: "rgba(229, 9, 20, 0.2)",
+                    color: "#ff8a80",
+                    border: "1px solid rgba(229, 9, 20, 0.3)",
+                    fontWeight: 700,
+                  }}
+                >
+                  EP {item.raw.episode_number}
+                </span>
+              )}
               <span className={`badge ${item.is_free ? "badge-free" : "badge-pro"}`}>
                 <span>{item.is_free ? "Free" : "Premium"}</span>
               </span>
@@ -94,7 +110,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                 </span>
               )}
 
-              {item.duration && (
+              {durationText && (
                 <span
                   style={{
                     display: "inline-flex",
@@ -105,7 +121,22 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   }}
                 >
                   <Clock size={12} />
-                  <span>{item.duration}</span>
+                  <span>{durationText}</span>
+                </span>
+              )}
+
+              {isTeaser && (
+                <span
+                  style={{
+                    fontSize: "0.70rem",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    background: "rgba(245, 158, 11, 0.15)",
+                    color: "#fcd34d",
+                    fontWeight: 600,
+                  }}
+                >
+                  Short Clip
                 </span>
               )}
 
@@ -173,81 +204,26 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
 
       {/* Main Body with Media Thumbnail */}
       <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-        {thumbnail && !imageFailed ? (
-          <Link
-            to={detailPath}
-            style={{
-              flexShrink: 0,
-              width: "135px",
-              aspectRatio: "16 / 9",
-              borderRadius: "8px",
-              overflow: "hidden",
-              border: "1px solid var(--border-subtle)",
-              background: "#080a0f",
-              position: "relative",
-              display: "block",
-            }}
-          >
-            <img
-              src={thumbnail}
-              alt={item.title}
-              loading="lazy"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                transition: "transform var(--transition-normal)",
-              }}
-              onError={() => setImageFailed(true)}
-            />
-            {isEpisode && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(0, 0, 0, 0.35)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  opacity: 0.85,
-                }}
-              >
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    background: "var(--accent-red)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  <Play size={13} fill="#ffffff" color="#ffffff" style={{ marginLeft: "2px" }} />
-                </div>
-              </div>
-            )}
-          </Link>
-        ) : (
-          <Link
-            to={detailPath}
-            style={{
-              flexShrink: 0,
-              width: "100px",
-              height: "64px",
-              borderRadius: "8px",
-              background: "rgba(255, 255, 255, 0.04)",
-              border: "1px dashed var(--border-card)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--text-muted)",
-            }}
-          >
-            {isEpisode ? <Film size={20} /> : <Tv size={20} />}
-          </Link>
-        )}
+        <Link
+          to={detailPath}
+          style={{
+            flexShrink: 0,
+            width: isEpisode ? "140px" : "110px",
+            aspectRatio: isEpisode ? "16 / 9" : "3 / 4",
+            borderRadius: "8px",
+            overflow: "hidden",
+            display: "block",
+            transition: "transform var(--transition-fast)",
+          }}
+        >
+          <MediaImage
+            src={thumbnail}
+            alt={item.title}
+            type={isEpisode ? "episode" : isChannel ? "channel" : "program"}
+            aspectRatio={isEpisode ? "16 / 9" : "3 / 4"}
+            showPlayBadge={isEpisode}
+          />
+        </Link>
 
         {/* Content Details */}
         <div style={{ flex: 1, minWidth: 0 }}>

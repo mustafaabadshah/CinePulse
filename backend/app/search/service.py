@@ -134,6 +134,8 @@ class SearchService:
                             subtitle=subtitle,
                             snippet=snippet,
                             tags=tags,
+                            source_url=item.get("thumbnail"),
+                            thumbnail=item.get("thumbnail"),
                             channel_name=item.get("channel_name"),
                             program_name=item.get("name"),
                             raw=item,

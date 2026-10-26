@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { getEpisode } from "../api/client";
 import { Episode } from "../types";
+import { formatDuration, isTeaserOrClip } from "../utils/formatDuration";
+import { MediaImage } from "../components/MediaImage";
 
 export const EpisodeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -90,26 +92,26 @@ export const EpisodeDetailPage: React.FC = () => {
       <article className="card-glass animate-fade-in" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={{ display: "flex", gap: "28px", flexWrap: "wrap", alignItems: "flex-start" }}>
           {/* Thumbnail */}
-          {episode.thumbnail && (
-            <div
-              style={{
-                width: "300px",
-                maxWidth: "100%",
-                borderRadius: "12px",
-                overflow: "hidden",
-                border: "1px solid var(--border-card)",
-                background: "rgba(0, 0, 0, 0.5)",
-                boxShadow: "var(--shadow-md)",
-                flexShrink: 0,
-              }}
-            >
-              <img
-                src={episode.thumbnail}
-                alt={episode.title}
-                style={{ width: "100%", height: "auto", display: "block", objectFit: "cover" }}
-              />
-            </div>
-          )}
+          <div
+            style={{
+              width: "320px",
+              maxWidth: "100%",
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: "1px solid var(--border-card)",
+              background: "rgba(0, 0, 0, 0.5)",
+              boxShadow: "var(--shadow-md)",
+              flexShrink: 0,
+            }}
+          >
+            <MediaImage
+              src={episode.thumbnail}
+              alt={episode.title}
+              type="episode"
+              aspectRatio="16 / 9"
+              showPlayBadge={true}
+            />
+          </div>
 
           {/* Core Info */}
           <div style={{ flex: 1, minWidth: "280px" }}>
@@ -152,7 +154,21 @@ export const EpisodeDetailPage: React.FC = () => {
               {episode.duration && (
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <Clock size={16} color="var(--accent-blue)" />
-                  <span>{episode.duration} ({episode.duration_seconds || 0}s)</span>
+                  <span>{formatDuration(episode.duration_seconds, episode.duration)}</span>
+                  {isTeaserOrClip(episode.duration_seconds) && (
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        background: "rgba(245, 158, 11, 0.15)",
+                        color: "#fcd34d",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Short Clip
+                    </span>
+                  )}
                 </div>
               )}
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -300,27 +316,50 @@ export const EpisodeDetailPage: React.FC = () => {
                     textDecoration: "none",
                   }}
                 >
-                  {sib.thumbnail && (
-                    <div style={{ width: "100%", height: "100px", borderRadius: "6px", overflow: "hidden", background: "#000" }}>
-                      <img src={sib.thumbnail} alt={sib.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                  )}
-                  <h4
-                    style={{
-                      fontSize: "0.88rem",
-                      fontWeight: 600,
-                      color: "var(--text-primary)",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      margin: 0,
-                    }}
-                  >
-                    {sib.title}
-                  </h4>
+                  <div style={{ width: "100%", borderRadius: "6px", overflow: "hidden" }}>
+                    <MediaImage
+                      src={sib.thumbnail}
+                      alt={sib.title}
+                      type="episode"
+                      aspectRatio="16 / 9"
+                      showPlayBadge={true}
+                    />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                    <h4
+                      style={{
+                        fontSize: "0.88rem",
+                        fontWeight: 600,
+                        color: "var(--text-primary)",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        margin: 0,
+                        flex: 1,
+                      }}
+                    >
+                      {sib.title}
+                    </h4>
+                    {sib.episode_number !== undefined && sib.episode_number !== null && (
+                      <span
+                        style={{
+                          fontSize: "0.7rem",
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          background: "rgba(229, 9, 20, 0.2)",
+                          color: "#ff8a80",
+                          border: "1px solid rgba(229, 9, 20, 0.3)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        EP {sib.episode_number}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                    <span>{sib.duration}</span>
+                    <span>{formatDuration(sib.duration_seconds, sib.duration)}</span>
                     <span>{formatViews(sib.views)} views</span>
                   </div>
                 </Link>

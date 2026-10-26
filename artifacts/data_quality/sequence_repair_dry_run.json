@@ -1,0 +1,302 @@
+{
+  "timestamp": "2026-10-26T11:16:42.768410+00:00",
+  "mode": "dry_run",
+  "total_episodes": 6547,
+  "extracted_sequence_count": 2343,
+  "unresolved_count": 4204,
+  "source_csv_unmodified": true,
+  "sample_repairs": [
+    {
+      "id": "102536",
+      "title": "Muhabbat Khel Tamasha | Teaser 3 | TV One Drama",
+      "program_id": "248",
+      "old_episode_number": null,
+      "new_episode_number": 3,
+      "confidence": 1.0
+    },
+    {
+      "id": "102537",
+      "title": "Muhabbat Khel Tamasha | Teaser 2 | TV One Drama",
+      "program_id": "248",
+      "old_episode_number": null,
+      "new_episode_number": 2,
+      "confidence": 1.0
+    },
+    {
+      "id": "102538",
+      "title": "Muhabbat Khel Tamasha | Teaser 1 | TV One Drama",
+      "program_id": "248",
+      "old_episode_number": null,
+      "new_episode_number": 1,
+      "confidence": 1.0
+    },
+    {
+      "id": "103413",
+      "title": "Fashion Pakistan Week | Teaser 2 |  TV One Fashion",
+      "program_id": "248",
+      "old_episode_number": null,
+      "new_episode_number": 2,
+      "confidence": 1.0
+    },
+    {
+      "id": "103414",
+      "title": "Fashion Pakistan Week | Teaser 1 |  TV One Fashion",
+      "program_id": "248",
+      "old_episode_number": null,
+      "new_episode_number": 1,
+      "confidence": 1.0
+    },
+    {
+      "id": "130859",
+      "title": "Jahan Fans Wahan Stadium - Episode 01",
+      "program_id": "100098",
+      "old_episode_number": null,
+      "new_episode_number": 1,
+      "confidence": 1.0
+    },
+    {
+      "id": "130860",
+      "title": "Jahan Fans Wahan Stadium - Episode 02",
+      "program_id": "100098",
+      "old_episode_number": null,
+      "new_episode_number": 2,
+      "confidence": 1.0
+    },
+    {
+      "id": "130865",
+      "title": "Jahan Fans Wahan Stadium - Episode 03",
+      "program_id": "100098",
+      "old_episode_number": null,
+      "new_episode_number": 3,
+      "confidence": 1.0
+    },
+    {
+      "id": "130973",
+      "title": "Jahan Fans Wahan Stadium - Episode 1",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 1,
+      "confidence": 1.0
+    },
+    {
+      "id": "130974",
+      "title": "Jahan Fans Wahan Stadium - Episode 2",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 2,
+      "confidence": 1.0
+    },
+    {
+      "id": "130975",
+      "title": "Jahan Fans Wahan Stadium - Episode 3",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 3,
+      "confidence": 1.0
+    },
+    {
+      "id": "130976",
+      "title": "Jahan Fans Wahan Stadium - Episode 4",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 4,
+      "confidence": 1.0
+    },
+    {
+      "id": "130977",
+      "title": "Jahan Fans Wahan Stadium - Episode 5",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 5,
+      "confidence": 1.0
+    },
+    {
+      "id": "130980",
+      "title": "Jahan Fans Wahan Stadium - Episode 6",
+      "program_id": "100101",
+      "old_episode_number": null,
+      "new_episode_number": 6,
+      "confidence": 1.0
+    },
+    {
+      "id": "131419",
+      "title": "Ehd E Wafa | Episode 1",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 1,
+      "confidence": 1.0
+    },
+    {
+      "id": "131420",
+      "title": "Ehd E Wafa | Episode 2",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 2,
+      "confidence": 1.0
+    },
+    {
+      "id": "131421",
+      "title": "Ehd E Wafa | Episode 3",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 3,
+      "confidence": 1.0
+    },
+    {
+      "id": "131422",
+      "title": "Ehd E Wafa | Episode 4",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 4,
+      "confidence": 1.0
+    },
+    {
+      "id": "131423",
+      "title": "Ehd E Wafa | Episode 5",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 5,
+      "confidence": 1.0
+    },
+    {
+      "id": "131424",
+      "title": "Ehd E Wafa | Episode 6",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 6,
+      "confidence": 1.0
+    },
+    {
+      "id": "131425",
+      "title": "Ehd E Wafa | Episode 7",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 7,
+      "confidence": 1.0
+    },
+    {
+      "id": "131426",
+      "title": "Ehd E Wafa | Episode 8",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 8,
+      "confidence": 1.0
+    },
+    {
+      "id": "131427",
+      "title": "Ehd E Wafa | Episode 9",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 9,
+      "confidence": 1.0
+    },
+    {
+      "id": "131428",
+      "title": "Ehd E Wafa | Episode 10",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 10,
+      "confidence": 1.0
+    },
+    {
+      "id": "131429",
+      "title": "Ehd E Wafa | Episode 11",
+      "program_id": "100075",
+      "old_episode_number": null,
+      "new_episode_number": 11,
+      "confidence": 1.0
+    }
+  ],
+  "sample_unresolved": [
+    {
+      "id": "120148",
+      "title": "Aaj Pakistan | 02 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120228",
+      "title": "Aaj Pakistan | 03 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120429",
+      "title": "Aaj Pakistan | 06 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120511",
+      "title": "Aaj Pakistan | 07 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120597",
+      "title": "Aaj Pakistan | 08 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120679",
+      "title": "Aaj Pakistan | 09 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120761",
+      "title": "Aaj Pakistan | 10 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "120966",
+      "title": "Aaj Pakistan | 13 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121050",
+      "title": "Aaj Pakistan | 14 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121135",
+      "title": "Aaj Pakistan | 15 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121218",
+      "title": "Aaj Pakistan | 16 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121299",
+      "title": "Aaj Pakistan | 17 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121526",
+      "title": "Aaj Pakistan | 20 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121610",
+      "title": "Aaj Pakistan | 21 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    },
+    {
+      "id": "121696",
+      "title": "Aaj Pakistan | 22 - September | Aaj News",
+      "program_id": "1051",
+      "reason": "No explicit episode number pattern found in title or slug"
+    }
+  ]
+}

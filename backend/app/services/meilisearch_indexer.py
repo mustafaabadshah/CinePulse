@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from app.core.logging import logger
 from app.models.episode import Episode
 from app.models.program import Program
-from app.services.data_normalizer import split_tags
+from app.services.data_normalizer import normalize_thumbnail_url, split_tags
 from app.search.client import get_meilisearch_client
 
 INDEX_EPISODES = "episodes"
@@ -43,6 +43,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
         "sortable_attributes": [
             "views",
             "duration_seconds",
+            "episode_number",
             "title",
         ],
         "displayed_attributes": [
@@ -52,6 +53,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "title",
             "slug",
             "description",
+            "episode_number",
             "duration",
             "duration_seconds",
             "views",
@@ -120,6 +122,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "info_content_type",
             "info_staring",
             "starring_list",
+            "thumbnail",
         ],
         "ranking_rules": [
             "words",
@@ -207,7 +210,7 @@ def wait_for_meili_tasks(
     }
 
 
-def program_to_search_doc(p: Program) -> Dict[str, Any]:
+def program_to_search_doc(p: Program, thumbnail: Optional[str] = None) -> Dict[str, Any]:
     """Transforms a Program ORM model into a Meilisearch document."""
     return {
         "id": p.id,
@@ -222,6 +225,7 @@ def program_to_search_doc(p: Program) -> Dict[str, Any]:
         "info_content_type": p.info_content_type,
         "info_staring": p.info_staring,
         "starring_list": split_tags(p.info_staring),
+        "thumbnail": thumbnail,
     }
 
 
@@ -240,6 +244,7 @@ def episode_to_search_doc(ep: Episode, program: Optional[Program] = None) -> Dic
         "title": ep.title,
         "slug": ep.slug,
         "description": ep.description,
+        "episode_number": ep.episode_number,
         "duration": ep.duration,
         "duration_seconds": ep.duration_seconds,
         "views": ep.views,
@@ -250,7 +255,7 @@ def episode_to_search_doc(ep: Episode, program: Optional[Program] = None) -> Dic
         "genre_list": split_tags(ep.genre),
         "region": ep.region,
         "is_vertical": ep.is_vertical,
-        "thumbnail": ep.thumbnail,
+        "thumbnail": normalize_thumbnail_url(ep.thumbnail),
         "channel_name": chan_name,
         "language": lang,
         "stars": stars,
@@ -258,10 +263,18 @@ def episode_to_search_doc(ep: Episode, program: Optional[Program] = None) -> Dic
     }
 
 
-def sync_programs_to_index(client: Client, programs: List[Program], batch_size: int = 500) -> List[int]:
+def sync_programs_to_index(
+    client: Client,
+    programs: List[Program],
+    program_thumbnails: Optional[Dict[str, str]] = None,
+    batch_size: int = 500,
+) -> List[int]:
     """Batches and upserts Program documents into Meilisearch."""
     idx = client.index(INDEX_PROGRAMS)
-    docs = [program_to_search_doc(p) for p in programs]
+    docs = [
+        program_to_search_doc(p, program_thumbnails.get(p.id) if program_thumbnails else None)
+        for p in programs
+    ]
     task_uids = []
     for i in range(0, len(docs), batch_size):
         batch = docs[i : i + batch_size]
@@ -303,7 +316,16 @@ def rebuild_media_indexes_from_db(db: Session, client: Client) -> Dict[str, Any]
     programs_map = {p.id: p for p in programs}
     episodes = db.query(Episode).all()
 
-    prog_tasks = sync_programs_to_index(client, programs)
+    # Precompute program thumbnails inherited from child episodes
+    program_thumbnails: Dict[str, str] = {}
+    for ep in episodes:
+        pid = ep.program_id or ep.raw_program_id
+        if pid and pid not in program_thumbnails and ep.thumbnail:
+            norm_thumb = normalize_thumbnail_url(ep.thumbnail)
+            if norm_thumb:
+                program_thumbnails[pid] = norm_thumb
+
+    prog_tasks = sync_programs_to_index(client, programs, program_thumbnails)
     ep_tasks = sync_episodes_to_index(client, episodes, programs_map)
 
     all_tasks = prog_tasks + ep_tasks

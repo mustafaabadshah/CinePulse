@@ -5,12 +5,13 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import Integer, cast
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.episode import Episode
 from app.models.program import Program
-from app.services.data_normalizer import split_tags
+from app.services.data_normalizer import normalize_thumbnail_url, split_tags
 
 router = APIRouter(prefix="/programs", tags=["Programs"])
 
@@ -60,21 +61,33 @@ def list_programs(
 
 
 @router.get("/{id}")
-def get_program(id: str, db: Session = Depends(get_db)) -> Dict[str, Any]:
-    """Retrieves full details for a program including its child episodes."""
+def get_program(
+    id: str,
+    sort: str = Query(default="sequence", description="Sort order: sequence or views"),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    """Retrieves full details for a program including its child episodes in sequence."""
     p = db.query(Program).filter(Program.id == id).first()
     if not p:
         raise HTTPException(status_code=404, detail=f"Program '{id}' not found.")
 
-    episodes = (
-        db.query(Episode)
-        .filter(Episode.program_id == id)
-        .order_by(Episode.views.desc())
-        .limit(20)
-        .all()
-    )
+    ep_query = db.query(Episode).filter(Episode.program_id == id)
+    if sort == "views":
+        ep_query = ep_query.order_by(Episode.views.desc())
+    else:
+        # Default: chronological sequence by episode_number, then sequential ID
+        ep_query = ep_query.order_by(
+            Episode.episode_number.asc().nulls_last(),
+            cast(Episode.id, Integer).asc()
+        )
 
+    episodes = ep_query.limit(limit).all()
     episode_count = db.query(Episode).filter(Episode.program_id == id).count()
+
+    primary_thumb = None
+    if episodes and episodes[0].thumbnail:
+        primary_thumb = normalize_thumbnail_url(episodes[0].thumbnail)
 
     return {
         "id": p.id,
@@ -93,18 +106,20 @@ def get_program(id: str, db: Session = Depends(get_db)) -> Dict[str, Any]:
         "imported_at": p.imported_at.isoformat() if p.imported_at else None,
         "created_at": p.created_at.isoformat(),
         "updated_at": p.updated_at.isoformat(),
+        "thumbnail": primary_thumb,
         "episode_count": episode_count,
         "episodes": [
             {
                 "id": ep.id,
                 "title": ep.title,
                 "slug": ep.slug,
+                "episode_number": ep.episode_number,
                 "duration": ep.duration,
                 "duration_seconds": ep.duration_seconds,
                 "views": ep.views,
                 "is_free": ep.is_free,
                 "content_tier": ep.content_tier,
-                "thumbnail": ep.thumbnail,
+                "thumbnail": normalize_thumbnail_url(ep.thumbnail),
                 "genre": ep.genre,
             }
             for ep in episodes
