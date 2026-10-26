@@ -1,6 +1,6 @@
 """API integration tests for public entity retrieval and health checks."""
 
-from app.models import Institution, Publication, Researcher
+from app.models import Episode, Program
 
 
 def test_health_check(client):
@@ -13,64 +13,38 @@ def test_health_check(client):
     assert "meilisearch" in data["components"]
 
 
-def test_researchers_endpoints(client, db_session):
-    # Seed an institution and researcher
-    inst = Institution(
-        id="inst_test",
-        name="Test Institute of Tech",
-        normalized_name="test institute of tech",
-        country="United States",
-        city="Boston",
+def test_media_catalog_endpoints(client, db_session):
+    # Seed a program and episode
+    prog = Program(
+        id="prog_health_test",
+        name="Trending News Bulletin",
+        slug="trending-news-bulletin",
+        channel_name="Express News",
+        info_language="Urdu",
+        info_genre="News",
     )
-    db_session.add(inst)
+    db_session.add(prog)
     db_session.commit()
 
-    res = Researcher(
-        id="res_test_user",
-        full_name="Dr. Test User",
-        institution_id="inst_test",
-        country="United States",
-        department="Computer Science",
-        research_interests=["ML", "Vision"],
-        is_synthetic=True,
+    ep = Episode(
+        id="ep_health_test",
+        title="Breaking News Headlines",
+        slug="breaking-news-headlines",
+        program_id="prog_health_test",
+        views=12000,
+        is_free=True,
     )
-    db_session.add(res)
+    db_session.add(ep)
     db_session.commit()
 
-    # List
-    response = client.get("/api/researchers")
-    assert response.status_code == 200
-    items = response.json()
-    assert len(items) >= 1
-    assert items[0]["id"] == "res_test_user"
+    # List programs
+    res_p = client.get("/api/programs")
+    assert res_p.status_code == 200
+    p_data = res_p.json()
+    assert any(item["id"] == "prog_health_test" for item in p_data["items"])
 
-    # Single
-    single_res = client.get("/api/researchers/res_test_user")
-    assert single_res.status_code == 200
-    data = single_res.json()
-    assert data["researcher"]["full_name"] == "Dr. Test User"
-    assert data["institution"]["name"] == "Test Institute of Tech"
-
-
-def test_publications_endpoints(client, db_session):
-    pub = Publication(
-        id="pub_test_paper",
-        title="Scalable Machine Learning at Scale",
-        authors=["Dr. Test User"],
-        publication_year=2025,
-        venue="NeurIPS 2025",
-        keywords=["ML", "Scale"],
-        is_synthetic=True,
-    )
-    db_session.add(pub)
-    db_session.commit()
-
-    response = client.get("/api/publications")
-    assert response.status_code == 200
-    items = response.json()
-    assert len(items) >= 1
-    assert items[0]["id"] == "pub_test_paper"
-
-    single_pub = client.get("/api/publications/pub_test_paper")
-    assert single_pub.status_code == 200
-    assert single_pub.json()["publication"]["title"] == "Scalable Machine Learning at Scale"
+    # List episodes
+    res_e = client.get("/api/episodes")
+    assert res_e.status_code == 200
+    e_data = res_e.json()
+    assert any(item["id"] == "ep_health_test" for item in e_data["items"])

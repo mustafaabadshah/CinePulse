@@ -1,12 +1,19 @@
 export interface SearchResultItem {
   id: string;
-  type: 'researcher' | 'publication' | 'institution' | 'episode' | 'program';
+  type: 'episode' | 'program';
   title: string;
   subtitle?: string;
   snippet?: string;
   tags: string[];
   source_url?: string;
-  is_synthetic: boolean;
+  thumbnail?: string;
+  views?: number;
+  duration?: string;
+  duration_seconds?: number;
+  is_free?: boolean;
+  content_tier?: string;
+  channel_name?: string;
+  program_name?: string;
   raw: Record<string, any>;
   formatted?: Record<string, any>;
 }
@@ -24,62 +31,13 @@ export interface SearchResponse {
   facet_distribution: Record<string, Record<string, number>>;
 }
 
-export interface Researcher {
-  id: string;
-  full_name: string;
-  official_profile_url?: string;
-  institution_id: string;
-  institution_name?: string;
-  department?: string;
-  country: string;
-  research_interests: string[];
-  biography?: string;
-  contact_email_verified: boolean;
-  contact_email?: string;
-  contact_source_url?: string;
-  last_verified_at?: string;
-  is_synthetic: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Publication {
-  id: string;
-  title: string;
-  abstract?: string;
-  authors: string[];
-  primary_institution_id?: string;
-  institution_name?: string;
-  publication_year: number;
-  venue?: string;
-  doi?: string;
-  canonical_url?: string;
-  keywords: string[];
-  source_provider: string;
-  is_synthetic: boolean;
-  imported_at: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Institution {
-  id: string;
-  name: string;
-  normalized_name?: string;
-  country: string;
-  city: string;
-  website_url?: string;
-  ror_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface Episode {
   id: string;
   title: string;
   slug: string;
   description?: string;
   program_id?: string;
+  raw_program_id?: string;
   duration?: string;
   duration_seconds?: number;
   views: number;
@@ -139,13 +97,6 @@ export interface Program {
   }[];
 }
 
-export interface Provenance {
-  source_provider: string;
-  source_url?: string;
-  is_verified: boolean;
-  imported_at?: string;
-}
-
 export interface ImportJob {
   id: string;
   status: 'pending' | 'running' | 'completed' | 'failed' | 'dry_run_completed' | 'search_sync_failed';
@@ -161,25 +112,6 @@ export interface ImportJob {
   completed_at?: string;
 }
 
-export interface SearchAnalyticsSummary {
-  total_searches: number;
-  zero_result_searches: number;
-  zero_result_rate: number;
-  average_latency_ms: number;
-  p95_latency_ms: number;
-  top_queries: { query: string; count: number }[];
-  recent_searches: {
-    id: number;
-    query_text: string;
-    index_name: string;
-    filters_applied: Record<string, any>;
-    results_count: number;
-    latency_ms: number;
-    zero_result: boolean;
-    timestamp: string;
-  }[];
-}
-
 export interface HealthStatus {
   status: 'healthy' | 'degraded';
   components: {
@@ -192,23 +124,36 @@ export interface HealthStatus {
 }
 
 export interface IndexStatusSummary {
-  status: string;
-  meilisearch_reachable: boolean;
-  indexes: Record<string, { database_count: number; indexed_count: number; is_synchronized: boolean }>;
-  pending_tasks_count: number;
-  failed_tasks_count: number;
+  healthy: boolean;
+  indexes: Record<string, { database_count: number; indexed_count: number; is_consistent: boolean }>;
+  tasks: {
+    pending: number;
+    failed: number;
+  };
   last_sync_time?: string;
+  last_job_status?: string;
 }
 
 export interface SourceFilesStatus {
   data_dir: string;
-  files: Record<string, {
-    filename: string;
-    path: string;
-    exists: boolean;
-    readable: boolean;
-    size_bytes: number;
-    modified_at?: string;
-    error?: string;
-  }>;
+  files: {
+    enrichment_file: {
+      filename: string;
+      path: string;
+      exists: boolean;
+      size_bytes: number;
+      modified_at?: string;
+      total_rows?: number;
+      has_bom?: boolean;
+    };
+    episodes_file: {
+      filename: string;
+      path: string;
+      exists: boolean;
+      size_bytes: number;
+      modified_at?: string;
+      total_rows?: number;
+      has_bom?: boolean;
+    };
+  };
 }

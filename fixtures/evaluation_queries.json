@@ -1,162 +1,130 @@
 [
   {
     "id": "q1",
-    "query": "Elena Rostova",
-    "category": "exact_researcher",
-    "type": "researchers",
-    "expected_ids": ["res_elena_rostova_mit"],
-    "graded_relevance": { "res_elena_rostova_mit": 3 }
-  },
-  {
-    "id": "q2",
-    "query": "Elena Rostva",
-    "category": "typo_researcher",
-    "type": "researchers",
-    "expected_ids": ["res_elena_rostova_mit"],
-    "graded_relevance": { "res_elena_rostova_mit": 3 }
-  },
-  {
-    "id": "q3",
-    "query": "Marcus Vance",
-    "category": "exact_researcher",
-    "type": "researchers",
-    "expected_ids": ["res_marcus_vance_stanford"],
-    "graded_relevance": { "res_marcus_vance_stanford": 3 }
-  },
-  {
-    "id": "q4",
-    "query": "Diffusion Flow Matching",
-    "category": "exact_paper",
-    "type": "publications",
-    "expected_ids": ["pub_diffusion_flow_2025"],
-    "graded_relevance": { "pub_diffusion_flow_2025": 3 }
-  },
-  {
-    "id": "q5",
-    "query": "Diffus Flow Matchng",
-    "category": "typo_paper",
-    "type": "publications",
-    "expected_ids": ["pub_diffusion_flow_2025"],
-    "graded_relevance": { "pub_diffusion_flow_2025": 3 }
-  },
-  {
-    "id": "q6",
-    "query": "Agentic AI",
-    "category": "topic_search",
-    "type": "all",
-    "expected_ids": ["res_marcus_vance_stanford", "res_priya_sharma_toronto", "pub_agent_planning_2026"],
-    "graded_relevance": {
-      "pub_agent_planning_2026": 3,
-      "res_marcus_vance_stanford": 2,
-      "res_priya_sharma_toronto": 2
-    }
-  },
-  {
-    "id": "q7",
-    "query": "Histopathology Pathology",
-    "category": "medical_ai",
-    "type": "publications",
-    "expected_ids": ["pub_medical_pathology_2024"],
-    "graded_relevance": { "pub_medical_pathology_2024": 3 }
-  },
-  {
-    "id": "q8",
-    "query": "Stanford University",
-    "category": "exact_institution",
-    "type": "institutions",
-    "expected_ids": ["inst_stanford"],
-    "graded_relevance": { "inst_stanford": 3 }
-  },
-  {
-    "id": "q9",
-    "query": "Stanfrd Unversity",
-    "category": "typo_institution",
-    "type": "institutions",
-    "expected_ids": ["inst_stanford"],
-    "graded_relevance": { "inst_stanford": 3 }
-  },
-  {
-    "id": "q10",
-    "query": "Gaussian Splatting",
-    "category": "vision_paper",
-    "type": "publications",
-    "expected_ids": ["pub_spatial_nerf_2026"],
-    "graded_relevance": { "pub_spatial_nerf_2026": 3 }
-  },
-  {
-    "id": "q11",
-    "query": "MLOps",
-    "category": "topic_search",
-    "type": "all",
-    "expected_ids": ["res_lars_lindqvist_eth", "pub_mlops_robustness_2024", "res_clara_weber_tum"],
-    "graded_relevance": {
-      "pub_mlops_robustness_2024": 3,
-      "res_lars_lindqvist_eth": 2,
-      "res_clara_weber_tum": 2
-    }
-  },
-  {
-    "id": "q12",
-    "query": "Hallucinations FactScore",
-    "category": "nlp_reasoning",
-    "type": "publications",
-    "expected_ids": ["pub_hallucination_eval_2025"],
-    "graded_relevance": { "pub_hallucination_eval_2025": 3 }
-  },
-  {
-    "id": "q13",
-    "query": "xyznonexistentgibberish123",
-    "category": "zero_result_check",
-    "type": "all",
-    "expected_ids": [],
-    "graded_relevance": {}
-  },
-  {
-    "id": "q14",
-    "query": "Honda Civic RS Turbo",
-    "category": "exact_episode_vehicle",
-    "type": "episodes",
-    "expected_ids": ["131243"],
-    "graded_relevance": { "131243": 3 }
-  },
-  {
-    "id": "q15",
     "query": "Ehd E Wafa",
-    "category": "exact_program_drama",
+    "category": "exact_program",
     "type": "programs",
     "expected_ids": ["100075"],
     "graded_relevance": { "100075": 3 }
   },
   {
-    "id": "q16",
-    "query": "PakWheels Review",
-    "category": "channel_program_search",
+    "id": "q2",
+    "query": "Ehd Wafa",
+    "category": "partial_program",
     "type": "programs",
-    "expected_ids": ["100088", "100089", "100091", "100092"],
-    "graded_relevance": { "100088": 3, "100089": 3, "100091": 2, "100092": 2 }
+    "expected_ids": ["100075"],
+    "graded_relevance": { "100075": 3 }
   },
   {
-    "id": "q17",
-    "query": "Muhabbat Khel Tamasha",
-    "category": "exact_episode_teaser",
-    "type": "episodes",
-    "expected_ids": ["102536", "102537", "102538"],
-    "graded_relevance": { "102536": 3, "102537": 3, "102538": 3 }
-  },
-  {
-    "id": "q18",
-    "query": "World Cup Ka Tamasha",
-    "category": "sports_episode_series",
-    "type": "episodes",
-    "expected_ids": ["203185", "203221", "203341", "203401"],
-    "graded_relevance": { "203185": 3, "203221": 3, "203341": 3, "203401": 3 }
-  },
-  {
-    "id": "q19",
-    "query": "Tamsha",
+    "id": "q3",
+    "query": "Ehd e Waffa",
     "category": "typo_program",
     "type": "programs",
     "expected_ids": ["100075"],
     "graded_relevance": { "100075": 3 }
+  },
+  {
+    "id": "q4",
+    "query": "PakWheels Review",
+    "category": "partial_program_series",
+    "type": "programs",
+    "expected_ids": ["100088", "100089"],
+    "graded_relevance": { "100088": 3, "100089": 3 }
+  },
+  {
+    "id": "q5",
+    "query": "PakWheels Revu",
+    "category": "typo_program",
+    "type": "programs",
+    "expected_ids": ["100088", "100089"],
+    "graded_relevance": { "100088": 3, "100089": 3 }
+  },
+  {
+    "id": "q6",
+    "query": "Ehd E Wafa | Episode 4",
+    "category": "exact_episode",
+    "type": "episodes",
+    "expected_ids": ["131422"],
+    "graded_relevance": { "131422": 3 }
+  },
+  {
+    "id": "q7",
+    "query": "Ehd E Wafa Episode 4",
+    "category": "partial_episode",
+    "type": "episodes",
+    "expected_ids": ["131422"],
+    "graded_relevance": { "131422": 3 }
+  },
+  {
+    "id": "q8",
+    "query": "Al Fatihah",
+    "category": "exact_episode",
+    "type": "episodes",
+    "expected_ids": ["132153"],
+    "graded_relevance": { "132153": 3 }
+  },
+  {
+    "id": "q9",
+    "query": "Al Fatiha",
+    "category": "typo_episode",
+    "type": "episodes",
+    "expected_ids": ["132153"],
+    "graded_relevance": { "132153": 3 }
+  },
+  {
+    "id": "q10",
+    "query": "Ahad Raza Mir",
+    "category": "actor_search",
+    "type": "all",
+    "expected_ids": ["100075", "131422", "131421", "131426"],
+    "graded_relevance": { "100075": 3, "131422": 2, "131421": 2, "131426": 2 }
+  },
+  {
+    "id": "q11",
+    "query": "Suneel Munj",
+    "category": "actor_cast_search",
+    "type": "programs",
+    "expected_ids": ["100088", "100089", "100090"],
+    "graded_relevance": { "100088": 3, "100089": 3, "100090": 3 }
+  },
+  {
+    "id": "q12",
+    "query": "24 NEWS HD",
+    "category": "exact_channel",
+    "type": "channels",
+    "expected_ids": ["28"],
+    "graded_relevance": { "28": 3 }
+  },
+  {
+    "id": "q13",
+    "query": "24 NEWS",
+    "category": "partial_channel",
+    "type": "channels",
+    "expected_ids": ["28"],
+    "graded_relevance": { "28": 3 }
+  },
+  {
+    "id": "q14",
+    "query": "automotive",
+    "category": "genre_search",
+    "type": "programs",
+    "expected_ids": ["100088", "100089", "100090"],
+    "graded_relevance": { "100088": 3, "100089": 3, "100090": 3 }
+  },
+  {
+    "id": "q15",
+    "query": "Minhaj University",
+    "category": "orphan_episode_search",
+    "type": "episodes",
+    "expected_ids": ["231071"],
+    "graded_relevance": { "231071": 3 }
+  },
+  {
+    "id": "q16",
+    "query": "Ehd E Wafa",
+    "category": "cross_index_unified",
+    "type": "all",
+    "expected_ids": ["100075", "131422", "131421", "131426"],
+    "graded_relevance": { "100075": 3, "131421": 2, "131422": 2, "131426": 2 }
   }
 ]

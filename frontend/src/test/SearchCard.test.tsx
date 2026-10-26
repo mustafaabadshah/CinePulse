@@ -5,16 +5,22 @@ import { SearchCard } from "../components/SearchCard";
 import { SearchResultItem } from "../types";
 
 describe("SearchCard Component", () => {
-  it("renders researcher card with name, tags, and verified badge", () => {
+  it("renders episode card with title, views, duration, and free badge", () => {
     const item: SearchResultItem = {
-      id: "res_elena_rostova_mit",
-      type: "researcher",
-      title: "Dr. Elena Rostova",
-      subtitle: "MIT • United States",
-      snippet: "Principal investigator specializing in diffusion models.",
-      tags: ["Generative AI", "Computer Vision"],
-      is_synthetic: true,
-      raw: { contact_email_verified: true },
+      id: "ep_101",
+      type: "episode",
+      title: "Ehd E Wafa Episode 1",
+      program_name: "Ehd E Wafa",
+      duration: "42:15",
+      views: 1540000,
+      is_free: true,
+      content_tier: "free",
+      tags: ["Drama", "Hum TV"],
+      raw: {
+        is_free: true,
+        duration: "42:15",
+        views: 1540000,
+      },
     };
 
     render(
@@ -23,23 +29,26 @@ describe("SearchCard Component", () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText("Dr. Elena Rostova")).toBeInTheDocument();
-    expect(screen.getByText("MIT • United States")).toBeInTheDocument();
-    expect(screen.getByText("Verified Contact")).toBeInTheDocument();
-    expect(screen.getByText("Synthetic")).toBeInTheDocument();
-    expect(screen.getByText("Generative AI")).toBeInTheDocument();
+    expect(screen.getByText("Ehd E Wafa Episode 1")).toBeInTheDocument();
+    expect(screen.getByText("Show: Ehd E Wafa")).toBeInTheDocument();
+    expect(screen.getByText("Free")).toBeInTheDocument();
+    expect(screen.getByText("1.5M views")).toBeInTheDocument();
+    expect(screen.getByText("Drama")).toBeInTheDocument();
   });
 
-  it("renders publication card with venue and authors", () => {
+  it("renders program card with channel name and genre", () => {
     const item: SearchResultItem = {
-      id: "pub_diffusion_flow_2025",
-      type: "publication",
-      title: "Continuous Flow Matching for Ultra-Fast Diffusion",
-      subtitle: "Elena Rostova, Haruto Takahashi • CVPR 2025 (2025)",
-      snippet: "We present a unified formulation for generative synthesis.",
-      tags: ["Diffusion Models"],
-      is_synthetic: true,
-      raw: {},
+      id: "prog_202",
+      type: "program",
+      title: "Hum News Live",
+      channel_name: "Hum Network",
+      tags: ["News", "Current Affairs"],
+      raw: {
+        type: "channel",
+        channel_name: "Hum Network",
+        info_language: "urdu",
+        info_staring: "News Anchors",
+      },
     };
 
     render(
@@ -48,7 +57,8 @@ describe("SearchCard Component", () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText("Continuous Flow Matching for Ultra-Fast Diffusion")).toBeInTheDocument();
-    expect(screen.getByText("publication")).toBeInTheDocument();
+    expect(screen.getByText("Hum News Live")).toBeInTheDocument();
+    expect(screen.getByText("Channel")).toBeInTheDocument();
+    expect(screen.getByText("News")).toBeInTheDocument();
   });
 });

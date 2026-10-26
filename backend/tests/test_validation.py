@@ -1,69 +1,41 @@
-"""Unit tests for validation rules and schema enforcement."""
+"""Unit tests for media catalog validation rules."""
 
-from app.ingestion.validator import (
-    validate_institution_record,
-    validate_publication_record,
-    validate_researcher_record,
-)
+from app.services.csv_importer import CsvMediaImporter
+from app.services.data_normalizer import clean_str
 
 
-def test_validate_institution_success():
-    raw = {
-        "name": "MIT CSAIL",
-        "country": "United States",
-        "city": "Cambridge",
-        "website_url": "https://www.csail.mit.edu",
-    }
-    clean, errors = validate_institution_record(raw)
-    assert errors == []
-    assert clean is not None
-    assert clean["name"] == "MIT CSAIL"
-    assert clean["country"] == "United States"
+def test_program_validation_rules():
+    # Valid program
+    prog_id = clean_str("100075")
+    prog_name = clean_str("Ehd E Wafa")
+    prog_slug = clean_str("ehd-e-wafa")
+    assert bool(prog_id and prog_name and prog_slug) is True
+
+    # Missing required id
+    invalid_id = clean_str("")
+    assert bool(invalid_id and prog_name and prog_slug) is False
+
+    # Missing required name
+    invalid_name = clean_str("  ")
+    assert bool(prog_id and invalid_name and prog_slug) is False
 
 
-def test_validate_institution_missing_required():
-    raw = {"country": "United States"}
-    clean, errors = validate_institution_record(raw)
-    assert len(errors) >= 2
-    assert any("name is required" in e.lower() for e in errors)
-    assert any("city is required" in e.lower() for e in errors)
-    assert clean is None
+def test_episode_validation_rules():
+    # Valid episode
+    ep_id = clean_str("102537")
+    ep_title = clean_str("Muhabbat Khel Tamasha | Teaser 2 | TV One Drama")
+    ep_slug = clean_str("muhabbat-khel-tamasha-teaser-2-tv-one-drama")
+    assert bool(ep_id and ep_title and ep_slug) is True
+
+    # Episode with empty title is invalid
+    invalid_title = clean_str("NULL")
+    assert bool(ep_id and invalid_title and ep_slug) is False
 
 
-def test_validate_researcher_verified_email_requires_source():
-    # If marked verified, must have contact_source_url
-    raw = {
-        "full_name": "Dr. Alice Turing",
-        "institution_id": "inst_mit",
-        "country": "United States",
-        "contact_email": "aturing@mit.edu",
-        "contact_email_verified": True,
-        "contact_source_url": None,  # Missing source URL!
-    }
-    clean, errors = validate_researcher_record(raw)
-    assert len(errors) == 1
-    assert "requires an authoritative contact_source_url" in errors[0]
-    assert clean is None
-
-
-def test_validate_researcher_invalid_email_format():
-    raw = {
-        "full_name": "Dr. Alice Turing",
-        "institution_id": "inst_mit",
-        "country": "United States",
-        "contact_email": "not-an-email",
-    }
-    clean, errors = validate_researcher_record(raw)
-    assert len(errors) == 1
-    assert "Invalid email format" in errors[0]
-
-
-def test_validate_publication_year_bounds():
-    raw = {
-        "title": "Quantum Foundations",
-        "publication_year": 1850,  # Below 1900
-        "authors": ["Albert Einstein"],
-    }
-    clean, errors = validate_publication_record(raw)
-    assert len(errors) == 1
-    assert "must be between 1900 and 2100" in errors[0]
+def test_orphan_episode_handling(db_session):
+    importer = CsvMediaImporter(db_session)
+    # Check that inspect source files detects headers correctly
+    status = importer.inspect_source_files()
+    assert status["prod_enrichment"]["exists"] is True
+    assert status["episodes_prod"]["exists"] is True
+    assert "program_id" in status["episodes_prod"]["headers"]

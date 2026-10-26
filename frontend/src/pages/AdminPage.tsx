@@ -91,7 +91,7 @@ export const AdminPage: React.FC = () => {
       const res = await triggerReindex(apiKey);
       setNotification({
         type: "success",
-        message: `Full reindexing completed! Synchronized: ${res.reindexed_counts.episodes || 0} episodes, ${res.reindexed_counts.programs || 0} programs, ${res.reindexed_counts.researchers || 0} researchers, ${res.reindexed_counts.publications || 0} publications, ${res.reindexed_counts.institutions || 0} institutions.`,
+        message: `Full reindexing completed! Synchronized: ${res.reindexed_counts.episodes || 0} episodes, ${res.reindexed_counts.programs || 0} programs into Meilisearch.`,
       });
       loadData();
     } catch (err: any) {
@@ -217,7 +217,7 @@ export const AdminPage: React.FC = () => {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    {f.exists && f.readable ? (
+                    {f.exists ? (
                       <CheckCircle size={15} color="#34d399" />
                     ) : (
                       <AlertTriangle size={15} color="#f87171" />
@@ -275,12 +275,12 @@ export const AdminPage: React.FC = () => {
                   fontSize: "0.78rem",
                   padding: "3px 8px",
                   borderRadius: "9999px",
-                  background: indexStatus.meilisearch_reachable ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)",
-                  color: indexStatus.meilisearch_reachable ? "#34d399" : "#f87171",
+                  background: indexStatus.healthy ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)",
+                  color: indexStatus.healthy ? "#34d399" : "#f87171",
                 }}
               >
-                <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: indexStatus.meilisearch_reachable ? "#34d399" : "#f87171" }} />
-                <span>{indexStatus.meilisearch_reachable ? "Connected (127.0.0.1:7700)" : "Disconnected"}</span>
+                <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: indexStatus.healthy ? "#34d399" : "#f87171" }} />
+                <span>{indexStatus.healthy ? "Connected (127.0.0.1:7700)" : "Disconnected"}</span>
               </span>
             )}
           </div>
@@ -318,11 +318,11 @@ export const AdminPage: React.FC = () => {
                         borderRadius: "4px",
                         fontSize: "0.72rem",
                         fontWeight: 600,
-                        background: info.is_synchronized ? "rgba(16, 185, 129, 0.15)" : "rgba(234, 179, 8, 0.15)",
-                        color: info.is_synchronized ? "#34d399" : "#facc15",
+                        background: info.is_consistent ? "rgba(16, 185, 129, 0.15)" : "rgba(234, 179, 8, 0.15)",
+                        color: info.is_consistent ? "#34d399" : "#facc15",
                       }}
                     >
-                      {info.is_synchronized ? "Synced" : "Mismatch"}
+                      {info.is_consistent ? "Synced" : "Mismatch"}
                     </span>
                   </span>
                 </div>
@@ -333,8 +333,8 @@ export const AdminPage: React.FC = () => {
           {/* Operational Metrics */}
           {indexStatus && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", color: "var(--text-muted)", flexWrap: "wrap", gap: "8px" }}>
-              <span>Pending Tasks: <strong style={{ color: "var(--text-primary)" }}>{indexStatus.pending_tasks_count}</strong></span>
-              <span>Failed Tasks: <strong style={{ color: indexStatus.failed_tasks_count > 0 ? "#f87171" : "var(--text-primary)" }}>{indexStatus.failed_tasks_count}</strong></span>
+              <span>Pending Tasks: <strong style={{ color: "var(--text-primary)" }}>{indexStatus.tasks?.pending ?? 0}</strong></span>
+              <span>Failed Tasks: <strong style={{ color: (indexStatus.tasks?.failed ?? 0) > 0 ? "#f87171" : "var(--text-primary)" }}>{indexStatus.tasks?.failed ?? 0}</strong></span>
               {indexStatus.last_sync_time && <span>Last Sync: {new Date(indexStatus.last_sync_time).toLocaleTimeString()}</span>}
             </div>
           )}
@@ -410,7 +410,7 @@ export const AdminPage: React.FC = () => {
               <h3 style={{ fontSize: "1.25rem", fontWeight: 700 }}>Confirm Full Search Rebuild</h3>
             </div>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: 1.5, marginBottom: "24px" }}>
-              Are you sure you want to rebuild all Meilisearch indexes from the canonical database? All 5 indexes (episodes, programs, researchers, publications, institutions) will be re-synchronized.
+              Are you sure you want to rebuild all Meilisearch indexes from the canonical database? Both media indexes (episodes and programs) will be purged and re-synchronized.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
               <button onClick={() => setShowReindexConfirm(false)} className="btn-secondary">

@@ -49,30 +49,13 @@ class Settings(BaseSettings):
     csv_enrichment_file: str = Field(default="prod_enrichment.csv", alias="CSV_ENRICHMENT_FILE")
     csv_episodes_file: str = Field(default="episodes_prod.csv", alias="CSV_EPISODES_FILE")
 
-    # Allowlisted Search Filters (Security hardening against arbitrary expressions)
-    allowed_researcher_filters: Set[str] = {
-        "country",
-        "institution_name",
-        "research_interests",
-        "is_synthetic",
-        "contact_email_verified",
-    }
-
-    allowed_publication_filters: Set[str] = {
-        "publication_year",
-        "venue",
-        "keywords",
-        "source_provider",
-        "is_synthetic",
-    }
-
-    allowed_institution_filters: Set[str] = {"country", "city"}
-
+    # Allowlisted Media Search Filters (Security hardening against arbitrary expressions)
     allowed_program_filters: Set[str] = {
         "type",
         "info_language",
         "channel_name",
         "info_content_type",
+        "info_genre",
     }
 
     allowed_episode_filters: Set[str] = {
@@ -84,6 +67,7 @@ class Settings(BaseSettings):
         "region",
         "is_vertical",
         "program_id",
+        "is_enable",
     }
 
     @property

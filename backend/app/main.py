@@ -11,10 +11,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes_admin import router as admin_router
 from app.api.routes_episodes import router as episodes_router
 from app.api.routes_health import router as health_router
-from app.api.routes_institutions import router as institutions_router
 from app.api.routes_programs import router as programs_router
-from app.api.routes_publications import router as publications_router
-from app.api.routes_researchers import router as researchers_router
 from app.api.routes_search import router as search_router
 from app.config import settings
 from app.core.database import Base, engine
@@ -25,7 +22,7 @@ from app.search.client import check_meili_health
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown hooks."""
-    logger.info("Initializing ResearchRadar backend services...")
+    logger.info("Initializing Tamasha Catalog Explorer backend services...")
     # Ensure database schemas are created
     Base.metadata.create_all(bind=engine)
 
@@ -38,13 +35,13 @@ async def lifespan(app: FastAPI):
         )
 
     yield
-    logger.info("ResearchRadar backend shutting down...")
+    logger.info("Tamasha Catalog Explorer backend shutting down...")
 
 
 app = FastAPI(
-    title="ResearchRadar API",
-    description="Production-grade research discovery platform powered by Meilisearch.",
-    version="0.1.0",
+    title="Tamasha Catalog Explorer API",
+    description="Dedicated OTT media catalog discovery and search platform powered by Meilisearch.",
+    version="0.2.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
@@ -121,7 +118,4 @@ app.include_router(health_router, prefix="/api")
 app.include_router(search_router, prefix="/api")
 app.include_router(episodes_router, prefix="/api")
 app.include_router(programs_router, prefix="/api")
-app.include_router(researchers_router, prefix="/api")
-app.include_router(publications_router, prefix="/api")
-app.include_router(institutions_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")

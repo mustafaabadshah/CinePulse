@@ -1,8 +1,8 @@
-"""System health and diagnostic endpoints."""
+"""System health and diagnostic endpoints for Tamasha media platform."""
 
 from app.core.database import get_db
 from app.search.client import check_meili_health, get_meili_client
-from app.search.indexes import INDEX_INSTITUTIONS, INDEX_PUBLICATIONS, INDEX_RESEARCHERS
+from app.search.indexes import INDEX_EPISODES, INDEX_PROGRAMS
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ router = APIRouter(tags=["Health"])
 
 @router.get("/health")
 def get_health(db: Session = Depends(get_db)):
-    """Health check validating backend, database connectivity, and Meilisearch engine status."""
+    """Health check validating backend, SQLite database connectivity, and Meilisearch engine status."""
     # Check DB
     db_healthy = False
     try:
@@ -28,7 +28,7 @@ def get_health(db: Session = Depends(get_db)):
     if meili_healthy:
         try:
             client = get_meili_client()
-            for idx in [INDEX_RESEARCHERS, INDEX_PUBLICATIONS, INDEX_INSTITUTIONS]:
+            for idx in [INDEX_EPISODES, INDEX_PROGRAMS]:
                 try:
                     stats = client.index(idx).get_stats()
                     index_stats[idx] = {

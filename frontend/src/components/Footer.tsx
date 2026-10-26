@@ -1,5 +1,5 @@
 import React from "react";
-import { Shield, ExternalLink } from "lucide-react";
+import { ExternalLink, Database, Film } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
       fontSize: "0.85rem"
     }}>
       <div style={{
-        maxWidth: "1280px",
+        maxWidth: "1400px",
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
@@ -31,13 +31,17 @@ export const Footer: React.FC = () => {
               fontWeight: 700,
               fontSize: "1.1rem",
               color: "var(--text-primary)",
-              marginBottom: "6px"
+              marginBottom: "6px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
             }}>
-              ResearchRadar
+              <Film size={18} color="var(--accent-red)" />
+              <span>Tamasha Catalog Explorer</span>
             </div>
-            <p style={{ maxWidth: "450px", lineHeight: "1.6" }}>
-              High-performance academic discovery engine powered by open-source Meilisearch.
-              Search across publications, faculty, institutions, and emerging technical domains.
+            <p style={{ maxWidth: "480px", lineHeight: "1.6" }}>
+              High-performance OTT media discovery platform powered by Meilisearch and canonical SQLite storage.
+              Search across programs, live channels, full episodes, genres, and cast metadata.
             </p>
           </div>
 
@@ -45,15 +49,15 @@ export const Footer: React.FC = () => {
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            background: "rgba(245, 158, 11, 0.08)",
-            border: "1px solid rgba(245, 158, 11, 0.25)",
+            background: "rgba(229, 9, 20, 0.08)",
+            border: "1px solid rgba(229, 9, 20, 0.25)",
             padding: "12px 18px",
             borderRadius: "10px",
-            maxWidth: "460px"
+            maxWidth: "480px"
           }}>
-            <Shield size={20} color="#f59e0b" style={{ flexShrink: 0 }} />
-            <div style={{ color: "#fbbf24", fontSize: "0.8rem", lineHeight: "1.4" }}>
-              <strong>Synthetic Data Notice:</strong> Sample demonstration records are explicitly marked synthetic. No real professors' emails are harvested or fabricated without verified source provenance.
+            <Database size={20} color="var(--accent-red)" style={{ flexShrink: 0 }} />
+            <div style={{ color: "#fca5a5", fontSize: "0.8rem", lineHeight: "1.4" }}>
+              <strong>Verified Canonical Catalog:</strong> Populated exclusively from verified production exports (634 programs/channels and 6,547 video episodes). Preserves orphan episodes with accurate parent resolution.
             </div>
           </div>
         </div>
@@ -68,7 +72,7 @@ export const Footer: React.FC = () => {
           gap: "12px"
         }}>
           <div>
-            &copy; 2026 ResearchRadar. Open Source Discovery Engine.
+            &copy; 2026 Tamasha Catalog Explorer. Media Discovery Powered by Meilisearch.
           </div>
           <div style={{ display: "flex", gap: "20px" }}>
             <a
@@ -80,15 +84,7 @@ export const Footer: React.FC = () => {
               <span>Meilisearch Docs</span>
               <ExternalLink size={13} />
             </a>
-            <a
-              href="https://github.com/meilisearch/meilisearch"
-              target="_blank"
-              rel="noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--text-secondary)" }}
-            >
-              <span>Meilisearch Engine</span>
-              <ExternalLink size={13} />
-            </a>
+            <span style={{ color: "var(--text-muted)" }}>SQLite &bull; FastAPI &bull; React</span>
           </div>
         </div>
       </div>

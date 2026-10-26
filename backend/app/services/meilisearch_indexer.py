@@ -100,6 +100,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
         "filterable_attributes": [
             "type",
             "info_language",
+            "info_genre",
             "channel_name",
             "info_content_type",
         ],
@@ -290,6 +291,13 @@ def rebuild_media_indexes_from_db(db: Session, client: Client) -> Dict[str, Any]
     """Rebuilds the media indexes directly from the canonical database."""
     setup_tasks = setup_media_indexes(client)
     wait_for_meili_tasks(client, setup_tasks, timeout_sec=20.0)
+
+    # Clean existing documents to ensure exact synchronization with the database
+    clean_tasks = [
+        client.index(INDEX_PROGRAMS).delete_all_documents().task_uid,
+        client.index(INDEX_EPISODES).delete_all_documents().task_uid,
+    ]
+    wait_for_meili_tasks(client, clean_tasks, timeout_sec=20.0)
 
     programs = db.query(Program).all()
     programs_map = {p.id: p for p in programs}

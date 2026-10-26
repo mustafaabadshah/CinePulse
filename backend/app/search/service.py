@@ -1,11 +1,10 @@
-"""Search service executing queries against Meilisearch with allowlisted filters and analytics recording."""
+"""Search service executing media catalog queries against Meilisearch with safe allowlisted filters."""
 
 import time
 from typing import Any, Dict, List, Optional
 
 from app.config import settings
 from app.core.logging import logger
-from app.models.analytics import SearchAnalyticsEvent
 from app.schemas.search import (
     SearchRequest,
     SearchResponse,
@@ -14,10 +13,7 @@ from app.schemas.search import (
 from app.search.client import get_meili_client
 from app.search.indexes import (
     INDEX_EPISODES,
-    INDEX_INSTITUTIONS,
     INDEX_PROGRAMS,
-    INDEX_PUBLICATIONS,
-    INDEX_RESEARCHERS,
 )
 from meilisearch.client import Client
 from sqlalchemy.orm import Session
@@ -65,7 +61,7 @@ class SearchService:
         return " AND ".join(expressions) if expressions else None
 
     def search(self, req: SearchRequest) -> SearchResponse:
-        """Executes search with allowlisted filtering, sorting, pagination, and analytics tracking."""
+        """Executes full-text search against the media catalog with allowlisted filters and facets."""
         start_time = time.perf_counter()
         target_type = req.type.lower()
         limit = min(req.limit, settings.max_search_limit)
@@ -76,237 +72,44 @@ class SearchService:
         total_hits = 0
         facet_distribution: Dict[str, Dict[str, int]] = {}
 
-        # 1. Researcher index query
-        if target_type in ("all", "researchers"):
+        # -----------------------------------------------------------------
+        # 1. Programs & Channels index query
+        # -----------------------------------------------------------------
+        if target_type in ("all", "programs", "channels"):
+            filters_dict = dict(req.filters or {})
+            if target_type == "channels":
+                filters_dict["type"] = "channel"
+
             filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_researcher_filters
+                filters_dict, settings.allowed_program_filters
             )
+            prog_limit = limit if target_type in ("programs", "channels") else min(limit, 6)
+            prog_offset = offset if target_type in ("programs", "channels") else 0
+
             search_params: Dict[str, Any] = {
-                "limit": limit if target_type == "researchers" else min(limit, 10),
-                "offset": offset if target_type == "researchers" else 0,
+                "limit": prog_limit,
+                "offset": prog_offset,
                 "attributesToHighlight": [
-                    "full_name",
-                    "research_interests",
-                    "biography",
-                    "institution_name",
-                ],
-                "highlightPreTag": "<mark>",
-                "highlightPostTag": "</mark>",
-                "facets": ["country", "institution_name", "research_interests", "is_synthetic"],
-            }
-            if filter_str:
-                search_params["filter"] = filter_str
-            if req.sort and target_type == "researchers":
-                search_params["sort"] = [req.sort]
-
-            try:
-                res = self.client.index(INDEX_RESEARCHERS).search(query, search_params)
-                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
-                if "facetDistribution" in res:
-                    for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
-
-                for item in res.get("hits", []):
-                    formatted = item.get("_formatted", {})
-                    hits.append(
-                        SearchResultItem(
-                            id=item["id"],
-                            type="researcher",
-                            title=item["full_name"],
-                            subtitle=f"{item.get('institution_name', '')} • {item.get('country', '')}",
-                            snippet=item.get("biography", ""),
-                            tags=item.get("research_interests", []),
-                            source_url=item.get("official_profile_url")
-                            or item.get("contact_source_url"),
-                            is_synthetic=item.get("is_synthetic", False),
-                            raw=item,
-                            formatted=formatted,
-                        )
-                    )
-            except Exception as e:
-                logger.error(f"Error querying researcher index: {e}")
-
-        # 2. Publication index query
-        if target_type in ("all", "publications"):
-            filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_publication_filters
-            )
-            search_params = {
-                "limit": limit if target_type == "publications" else min(limit, 10),
-                "offset": offset if target_type == "publications" else 0,
-                "attributesToHighlight": ["title", "abstract", "keywords", "authors", "venue"],
-                "highlightPreTag": "<mark>",
-                "highlightPostTag": "</mark>",
-                "facets": [
-                    "publication_year",
-                    "venue",
-                    "keywords",
-                    "source_provider",
-                    "is_synthetic",
-                ],
-            }
-            if filter_str:
-                search_params["filter"] = filter_str
-            if req.sort and target_type == "publications":
-                search_params["sort"] = [req.sort]
-
-            try:
-                res = self.client.index(INDEX_PUBLICATIONS).search(query, search_params)
-                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
-                if "facetDistribution" in res:
-                    for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
-
-                for item in res.get("hits", []):
-                    formatted = item.get("_formatted", {})
-                    authors_str = ", ".join(item.get("authors", []))
-                    venue_str = item.get("venue") or ""
-                    year_str = str(item.get("publication_year", ""))
-                    subtitle = (
-                        f"{authors_str} • {venue_str} ({year_str})" if venue_str else authors_str
-                    )
-                    hits.append(
-                        SearchResultItem(
-                            id=item["id"],
-                            type="publication",
-                            title=item["title"],
-                            subtitle=subtitle,
-                            snippet=item.get("abstract", ""),
-                            tags=item.get("keywords", []),
-                            source_url=item.get("canonical_url")
-                            or (f"https://doi.org/{item['doi']}" if item.get("doi") else None),
-                            is_synthetic=item.get("is_synthetic", False),
-                            raw=item,
-                            formatted=formatted,
-                        )
-                    )
-            except Exception as e:
-                logger.error(f"Error querying publication index: {e}")
-
-        # 3. Institution index query
-        if target_type in ("all", "institutions"):
-            filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_institution_filters
-            )
-            search_params = {
-                "limit": limit if target_type == "institutions" else min(limit, 5),
-                "offset": offset if target_type == "institutions" else 0,
-                "attributesToHighlight": ["name", "city", "country"],
-                "highlightPreTag": "<mark>",
-                "highlightPostTag": "</mark>",
-                "facets": ["country", "city"],
-            }
-            if filter_str:
-                search_params["filter"] = filter_str
-            if req.sort and target_type == "institutions":
-                search_params["sort"] = [req.sort]
-
-            try:
-                res = self.client.index(INDEX_INSTITUTIONS).search(query, search_params)
-                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
-                if "facetDistribution" in res:
-                    for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
-
-                for item in res.get("hits", []):
-                    formatted = item.get("_formatted", {})
-                    hits.append(
-                        SearchResultItem(
-                            id=item["id"],
-                            type="institution",
-                            title=item["name"],
-                            subtitle=f"{item.get('city', '')}, {item.get('country', '')}",
-                            snippet=f"Research institution located in {item.get('city')}, {item.get('country')}.",
-                            tags=[item.get("country", "")],
-                            source_url=item.get("website_url"),
-                            is_synthetic=False,
-                            raw=item,
-                            formatted=formatted,
-                        )
-                    )
-            except Exception as e:
-                logger.error(f"Error querying institution index: {e}")
-
-        # 4. Episode index query
-        if target_type in ("all", "episodes"):
-            filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_episode_filters
-            )
-            search_params = {
-                "limit": limit if target_type == "episodes" else min(limit, 10),
-                "offset": offset if target_type == "episodes" else 0,
-                "attributesToHighlight": ["title", "program_name", "stars", "genre", "description", "channel_name"],
-                "highlightPreTag": "<mark>",
-                "highlightPostTag": "</mark>",
-                "facets": [
-                    "is_free",
-                    "content_tier",
-                    "genre",
-                    "language",
+                    "name",
+                    "info_staring",
+                    "info_genre",
                     "channel_name",
-                    "region",
-                    "is_vertical",
+                    "info_meta_keywords",
                 ],
-            }
-            if filter_str:
-                search_params["filter"] = filter_str
-            if req.sort and target_type == "episodes":
-                search_params["sort"] = [req.sort]
-
-            try:
-                res = self.client.index(INDEX_EPISODES).search(query, search_params)
-                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
-                if "facetDistribution" in res:
-                    for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
-
-                for item in res.get("hits", []):
-                    formatted = item.get("_formatted", {})
-                    prog_str = item.get("program_name") or ""
-                    chan_str = item.get("channel_name") or ""
-                    dur_str = item.get("duration") or ""
-                    subtitle_parts = [p for p in [prog_str, chan_str, dur_str] if p]
-                    subtitle = " • ".join(subtitle_parts) if subtitle_parts else "Episode"
-                    tags = item.get("genre_list") or ([item.get("genre")] if item.get("genre") else [])
-
-                    hits.append(
-                        SearchResultItem(
-                            id=item["id"],
-                            type="episode",
-                            title=item["title"],
-                            subtitle=subtitle,
-                            snippet=item.get("description", ""),
-                            tags=tags,
-                            source_url=item.get("thumbnail"),
-                            is_synthetic=False,
-                            raw=item,
-                            formatted=formatted,
-                        )
-                    )
-            except Exception as e:
-                logger.error(f"Error querying episode index: {e}")
-
-        # 5. Program index query
-        if target_type in ("all", "programs"):
-            filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_program_filters
-            )
-            search_params = {
-                "limit": limit if target_type == "programs" else min(limit, 10),
-                "offset": offset if target_type == "programs" else 0,
-                "attributesToHighlight": ["name", "info_staring", "info_genre", "channel_name"],
                 "highlightPreTag": "<mark>",
                 "highlightPostTag": "</mark>",
-                "facets": ["type", "info_language", "channel_name", "info_content_type"],
+                "facets": ["type", "info_language", "channel_name", "info_content_type", "info_genre"],
             }
             if filter_str:
                 search_params["filter"] = filter_str
-            if req.sort and target_type == "programs":
+            if req.sort and target_type in ("programs", "channels"):
                 search_params["sort"] = [req.sort]
 
             try:
                 res = self.client.index(INDEX_PROGRAMS).search(query, search_params)
-                total_hits += res.get("estimatedTotalHits", len(res.get("hits", [])))
+                prog_total = res.get("estimatedTotalHits", len(res.get("hits", [])))
+                total_hits += prog_total
+
                 if "facetDistribution" in res:
                     for facet_k, facet_v in res["facetDistribution"].items():
                         facet_distribution.setdefault(facet_k, {}).update(facet_v)
@@ -331,8 +134,8 @@ class SearchService:
                             subtitle=subtitle,
                             snippet=snippet,
                             tags=tags,
-                            source_url=None,
-                            is_synthetic=False,
+                            channel_name=item.get("channel_name"),
+                            program_name=item.get("name"),
                             raw=item,
                             formatted=formatted,
                         )
@@ -340,6 +143,85 @@ class SearchService:
             except Exception as e:
                 logger.error(f"Error querying program index: {e}")
 
+        # -----------------------------------------------------------------
+        # 2. Episodes index query
+        # -----------------------------------------------------------------
+        if target_type in ("all", "episodes"):
+            filter_str = self.build_safe_filter_expression(
+                req.filters or {}, settings.allowed_episode_filters
+            )
+            ep_limit = limit if target_type == "episodes" else limit
+            ep_offset = offset if target_type == "episodes" else 0
+
+            search_params = {
+                "limit": ep_limit,
+                "offset": ep_offset,
+                "attributesToHighlight": [
+                    "title",
+                    "program_name",
+                    "stars",
+                    "genre",
+                    "description",
+                    "channel_name",
+                ],
+                "highlightPreTag": "<mark>",
+                "highlightPostTag": "</mark>",
+                "facets": [
+                    "is_free",
+                    "content_tier",
+                    "genre",
+                    "language",
+                    "channel_name",
+                    "region",
+                    "is_vertical",
+                ],
+            }
+            if filter_str:
+                search_params["filter"] = filter_str
+            if req.sort and target_type == "episodes":
+                search_params["sort"] = [req.sort]
+
+            try:
+                res = self.client.index(INDEX_EPISODES).search(query, search_params)
+                ep_total = res.get("estimatedTotalHits", len(res.get("hits", [])))
+                total_hits += ep_total
+
+                if "facetDistribution" in res:
+                    for facet_k, facet_v in res["facetDistribution"].items():
+                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
+
+                for item in res.get("hits", []):
+                    formatted = item.get("_formatted", {})
+                    prog_str = item.get("program_name") or ""
+                    chan_str = item.get("channel_name") or ""
+                    dur_str = item.get("duration") or ""
+                    subtitle_parts = [p for p in [prog_str, chan_str, dur_str] if p]
+                    subtitle = " • ".join(subtitle_parts) if subtitle_parts else "Episode"
+                    tags = item.get("genre_list") or ([item.get("genre")] if item.get("genre") else [])
+
+                    hits.append(
+                        SearchResultItem(
+                            id=item["id"],
+                            type="episode",
+                            title=item["title"],
+                            subtitle=subtitle,
+                            snippet=item.get("description", ""),
+                            tags=tags,
+                            source_url=item.get("thumbnail"),
+                            thumbnail=item.get("thumbnail"),
+                            views=item.get("views"),
+                            duration=item.get("duration"),
+                            duration_seconds=item.get("duration_seconds"),
+                            is_free=item.get("is_free"),
+                            content_tier=item.get("content_tier"),
+                            channel_name=item.get("channel_name"),
+                            program_name=item.get("program_name"),
+                            raw=item,
+                            formatted=formatted,
+                        )
+                    )
+            except Exception as e:
+                logger.error(f"Error querying episode index: {e}")
 
         # Compute elapsed time
         duration_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
@@ -352,21 +234,6 @@ class SearchService:
 
         page = (offset // limit) + 1 if limit > 0 else 1
         total_pages = (total_hits + limit - 1) // limit if limit > 0 else 1
-
-        # Record privacy-conscious analytics event
-        try:
-            event = SearchAnalyticsEvent(
-                query_text=query or "*",
-                index_name=target_type,
-                filters_applied=req.filters or {},
-                results_count=total_hits,
-                latency_ms=duration_ms,
-                zero_result=(total_hits == 0),
-            )
-            self.db.add(event)
-            self.db.commit()
-        except Exception as err:
-            logger.warning(f"Failed to record search analytics: {err}")
 
         return SearchResponse(
             query=query,

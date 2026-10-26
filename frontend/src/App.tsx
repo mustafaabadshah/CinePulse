@@ -4,13 +4,9 @@ import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { HomePage } from "./pages/HomePage";
 import { SearchResultsPage } from "./pages/SearchResultsPage";
-import { ResearcherDetailPage } from "./pages/ResearcherDetailPage";
-import { PublicationDetailPage } from "./pages/PublicationDetailPage";
-import { InstitutionDetailPage } from "./pages/InstitutionDetailPage";
 import { EpisodeDetailPage } from "./pages/EpisodeDetailPage";
 import { ProgramDetailPage } from "./pages/ProgramDetailPage";
 import { AdminPage } from "./pages/AdminPage";
-import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { HealthPage } from "./pages/HealthPage";
 
 export const App: React.FC = () => {
@@ -24,11 +20,7 @@ export const App: React.FC = () => {
             <Route path="/search" element={<SearchResultsPage />} />
             <Route path="/episodes/:id" element={<EpisodeDetailPage />} />
             <Route path="/programs/:id" element={<ProgramDetailPage />} />
-            <Route path="/researchers/:id" element={<ResearcherDetailPage />} />
-            <Route path="/publications/:id" element={<PublicationDetailPage />} />
-            <Route path="/institutions/:id" element={<InstitutionDetailPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/health" element={<HealthPage />} />
           </Routes>
         </main>
