@@ -49,6 +49,12 @@ class Settings(BaseSettings):
     csv_enrichment_file: str = Field(default="prod_enrichment.csv", alias="CSV_ENRICHMENT_FILE")
     csv_episodes_file: str = Field(default="episodes_prod.csv", alias="CSV_EPISODES_FILE")
 
+    # spaCy NLP Query Understanding Settings
+    spacy_model: str = Field(default="en_core_web_sm", alias="CINEPULSE_SPACY_MODEL")
+    nlp_enabled: bool = Field(default=True, alias="CINEPULSE_NLP_ENABLED")
+    nlp_max_query_length: int = Field(default=200, alias="CINEPULSE_NLP_MAX_QUERY_LEN")
+    nlp_confidence_threshold: float = Field(default=0.75, alias="CINEPULSE_NLP_CONFIDENCE_THRESHOLD")
+
     # Allowlisted Media Search Filters (Security hardening against arbitrary expressions)
     allowed_program_filters: Set[str] = {
         "type",
@@ -56,18 +62,21 @@ class Settings(BaseSettings):
         "channel_name",
         "info_content_type",
         "info_genre",
+        "genre_list",
     }
 
     allowed_episode_filters: Set[str] = {
         "is_free",
         "content_tier",
         "genre",
+        "genre_list",
         "language",
         "channel_name",
         "region",
         "is_vertical",
         "program_id",
         "is_enable",
+        "episode_number",
     }
 
     @property

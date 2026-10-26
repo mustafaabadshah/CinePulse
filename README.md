@@ -44,24 +44,31 @@
 
 ---
 
-## ✨ Key Technical Highlights
+### 1. spaCy NLP Query Understanding & Grounded Entity Recognition
+- **Lightweight CPU Architecture**: Shared `en_core_web_sm` pipeline and `EntityRuler` compiled once on startup, achieving **12.7ms p50 latency** on an 8GB RAM host with zero transformer bloat.
+- **1,320+ Grounded Catalog Rules**: Automatically resolves live program titles, broadcast channels (`Hum News`, `TV One`), genres, languages, and starring cast from SQLite metadata.
+- **Conversational Intent & Synonym Mapping**: Strips discovery filler (`"i want to watch"`, `"stream"`) and translates everyday vocabulary into catalog taxonomies (e.g. `"funny movie"` -> `genre_list: comedy`, `content_type: movie`).
+- **Precision Episode Routing**: Regex patterns interpret variations like `Episode 3`, `ep 03`, `EP 2`, and `S01E04` into canonical `program_id` and `episode_number` Meilisearch filters.
+- **Fail-Safe Zero-Hit Controller**: Seamlessly falls back to unassisted plain-text full-text search if structured filters yield zero hits, guaranteeing 100% recall.
+- **Interactive UI Filter Chips**: Displays removable entity badges (`Show: Ehd E Wafa ✕`, `Genre: Comedy ✕`) with an instant bypass toggle.
+- 📖 Full Documentation: [Architecture](docs/SPACY_NLP_ARCHITECTURE.md) | [Setup & Operations](docs/SPACY_SETUP_AND_OPERATIONS.md) | [Evaluation Benchmark](docs/SPACY_SEARCH_EVALUATION.md)
 
-### 1. Instant Faceted Search & Ranking (Meilisearch v1.12)
+### 2. Instant Faceted Search & Ranking (Meilisearch v1.12)
 - **Sub-50ms Latency**: Real-time search-as-you-type querying across 634 shows and 6,547 video episodes.
 - **Faceted Filtration**: Filter concurrently by **Category / Type** (Shows, Channels, Episodes), **Genre**, **Broadcaster Network**, and **Content Tier** (Free AVOD vs. Pro Subscription).
 - **Typo Tolerance & Highlights**: Matching query substrings are extracted with formatted highlight snippets.
 
-### 2. Chronological Episode Sequencing & Binge Recommendation
+### 3. Chronological Episode Sequencing & Binge Recommendation
 - **Canonical `episode_number` Extraction**: Employs an extraction engine parsing multi-format title patterns (`Episode 25`, `Ep 03`, `S01E02`, `Part 1`).
 - **Sequential Program Exploration**: TV shows default to narrative order (`EP 1`, `EP 2`, `EP 3`), with an instant toggle for "Most Viewed".
 - **Intelligent Sibling Recommendations**: When watching Episode 5, next recommendations automatically queue Episodes 6, 7, and 8.
 
-### 3. Media Data Quality & Duration Normalization
+### 4. Media Data Quality & Duration Normalization
 - **Dual Runtime Architecture**: Stores mathematical `duration_seconds` for sorting alongside standardized clock representations (`MM:SS` or `HH:MM:SS`).
 - **Short Clip Clarification**: Identifies genuine 30-second promotional trailers and recitations, rendering visual `Short Clip` badges to eliminate viewer confusion.
 - **Source Immutability**: All repairs occur safely within the canonical database and search index while preserving source CSV datasets unmodified.
 
-### 4. Amazon S3 CDN Resolution & Resilient Fallbacks
+### 5. Amazon S3 CDN Resolution & Resilient Fallbacks
 - **Relative Path Translation**: Resolves 6,292 relative image paths to active Amazon S3 WebP endpoints (`https://tamasha-app-images.s3.amazonaws.com/jazzlive/uploads/episodes/...`).
 - **Program Artwork Inheritance**: Shows without standalone posters dynamically inherit primary child episode imagery (providing 79.2% instant coverage).
 - **Zero Layout Shift (CLS)**: Strictly reserves 16:9 (episodes) and 3:4 (posters) aspect ratios with loading skeleton shimmers and designed SVG fallback cards.

@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes_admin import router as admin_router
 from app.api.routes_episodes import router as episodes_router
 from app.api.routes_health import router as health_router
+from app.api.routes_nlp import router as nlp_router
 from app.api.routes_programs import router as programs_router
 from app.api.routes_search import router as search_router
 from app.config import settings
@@ -33,6 +34,17 @@ async def lifespan(app: FastAPI):
         logger.warning(
             f"Could not reach Meilisearch at {settings.meili_http_addr}. Is the engine running?"
         )
+
+    # Initialize shared spaCy NLP layer with catalog entity grounding
+    try:
+        from app.core.database import SessionLocal
+        from app.services.nlp.service import nlp_service
+
+        with SessionLocal() as db:
+            nlp_service.initialize(db)
+            app.state.nlp_service = nlp_service
+    except Exception as nlp_err:
+        logger.warning(f"Could not initialize spaCy NLP Service on startup: {nlp_err}")
 
     yield
     logger.info("Tamasha Catalog Explorer backend shutting down...")
@@ -119,3 +131,4 @@ app.include_router(search_router, prefix="/api")
 app.include_router(episodes_router, prefix="/api")
 app.include_router(programs_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
+app.include_router(nlp_router, prefix="/api")

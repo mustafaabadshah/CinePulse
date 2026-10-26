@@ -25,6 +25,7 @@ export interface SearchParams {
   region?: string;
   is_vertical?: string;
   program_id?: string;
+  disable_nlp?: boolean;
 }
 
 export async function search(params: SearchParams): Promise<SearchResponse> {

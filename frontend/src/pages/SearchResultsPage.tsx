@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, X, SlidersHorizontal, RefreshCw, AlertCircle, Film } from "lucide-react";
+import { Search, X, SlidersHorizontal, RefreshCw, AlertCircle, Film, Sparkles } from "lucide-react";
 import { search } from "../api/client";
 import { SearchResponse } from "../types";
 import { SearchCard } from "../components/SearchCard";
@@ -14,6 +14,7 @@ export const SearchResultsPage: React.FC = () => {
   const initialType = (searchParams.get("type") as any) || "all";
 
   const [inputVal, setInputVal] = useState(initialQuery);
+  const [disableNlp, setDisableNlp] = useState<boolean>(false);
   const [activeType, setActiveType] = useState<"all" | "episodes" | "programs" | "channels">(initialType);
   const [sortOrder, setSortOrder] = useState<string>(() => {
     return searchParams.get("sort") || (searchParams.get("program_id") ? "episode_number:asc" : "");
@@ -64,6 +65,7 @@ export const SearchResultsPage: React.FC = () => {
         limit,
         offset,
         sort: sortOrder || undefined,
+        disable_nlp: disableNlp,
         ...filters,
       });
       setResults(resp);
@@ -72,7 +74,7 @@ export const SearchResultsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [inputVal, activeType, page, limit, sortOrder, filters]);
+  }, [inputVal, activeType, page, limit, sortOrder, filters, disableNlp]);
 
   // Debounced search-as-you-type
   useEffect(() => {
@@ -94,7 +96,7 @@ export const SearchResultsPage: React.FC = () => {
     }, 280);
 
     return () => clearTimeout(timer);
-  }, [inputVal, activeType, page, sortOrder, filters, doSearch]);
+  }, [inputVal, activeType, page, sortOrder, filters, disableNlp, doSearch]);
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters((prev) => {
@@ -145,6 +147,7 @@ export const SearchResultsPage: React.FC = () => {
             value={inputVal}
             onChange={(e) => {
               setInputVal(e.target.value);
+              setDisableNlp(false);
               setPage(1);
             }}
             placeholder="Search shows, channels, episodes, cast, genres (e.g. Ehd E Wafa, PakWheels, Hum News, Ahad)..."
@@ -288,6 +291,214 @@ export const SearchResultsPage: React.FC = () => {
               <div>
                 Engine Latency: <span style={{ color: "#34d399", fontWeight: 600 }}>{results.processing_time_ms}ms</span>
               </div>
+            </div>
+          )}
+
+          {/* spaCy NLP Query Understanding Banner */}
+          {results?.nlp?.is_nlp_assisted && !disableNlp && !loading && (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "18px",
+                padding: "10px 14px",
+                background: "rgba(229, 9, 20, 0.08)",
+                border: "1px solid rgba(229, 9, 20, 0.28)",
+                borderRadius: "10px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.8rem",
+                  fontWeight: 700,
+                  color: "var(--accent-red)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                <Sparkles size={14} />
+                <span>NLP Interpreted</span>
+              </div>
+
+              {/* Program Name Entity */}
+              {results.nlp.matched_program_name && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Show:</span>
+                  <strong style={{ color: "#ffffff" }}>{results.nlp.matched_program_name}</strong>
+                </span>
+              )}
+
+              {/* Episode Number Entity */}
+              {results.nlp.episode_number !== undefined && results.nlp.episode_number !== null && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Episode:</span>
+                  <strong style={{ color: "#34d399" }}>#{results.nlp.episode_number}</strong>
+                </span>
+              )}
+
+              {/* Channel Entity */}
+              {results.nlp.matched_channel && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Channel:</span>
+                  <strong style={{ color: "#ffffff" }}>{results.nlp.matched_channel}</strong>
+                </span>
+              )}
+
+              {/* Genre Entity */}
+              {results.nlp.matched_genre && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Genre:</span>
+                  <strong style={{ color: "#ffffff" }}>{results.nlp.matched_genre}</strong>
+                </span>
+              )}
+
+              {/* Content Type / Format Entity */}
+              {results.nlp.matched_content_type && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Format:</span>
+                  <strong style={{ color: "#ffffff", textTransform: "capitalize" }}>{results.nlp.matched_content_type}</strong>
+                </span>
+              )}
+
+              {/* Remaining Query Keywords */}
+              {results.nlp.remaining_query && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.04)",
+                    border: "1px dashed rgba(255, 255, 255, 0.2)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-secondary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Keywords:</span>
+                  <span style={{ fontStyle: "italic" }}>&ldquo;{results.nlp.remaining_query}&rdquo;</span>
+                </span>
+              )}
+
+              {/* Bypass NLP Button */}
+              <button
+                onClick={() => setDisableNlp(true)}
+                title="Bypass NLP entity filtering and search exact text"
+                style={{
+                  marginLeft: "auto",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--text-muted)",
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  transition: "color 0.2s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+              >
+                <X size={13} />
+                <span>Bypass NLP</span>
+              </button>
+            </div>
+          )}
+
+          {/* NLP Bypassed Notice */}
+          {disableNlp && results?.nlp?.is_nlp_assisted && !loading && (
+            <div
+              style={{
+                marginBottom: "14px",
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <span>NLP entity filters bypassed. Showing raw full-text search results.</span>
+              <button
+                onClick={() => setDisableNlp(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--accent-red)",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  fontSize: "0.8rem",
+                  padding: 0,
+                }}
+              >
+                Re-enable NLP
+              </button>
             </div>
           )}
 

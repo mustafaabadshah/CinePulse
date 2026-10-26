@@ -160,6 +160,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           {/* Program/Channel Badges */}
           {!isEpisode && (
             <>
+              {" "}
               {item.raw?.info_language && (
                 <span
                   style={{
@@ -175,7 +176,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   {item.raw.info_language}
                 </span>
               )}
-
+              {" "}
               {item.raw?.channel_name && (
                 <span
                   style={{
@@ -195,7 +196,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
         </div>
 
         {/* Channel or Parent Label */}
-        {item.channel_name && (
+        {item.channel_name && !item.raw?.channel_name && (
           <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
             {item.channel_name}
           </span>

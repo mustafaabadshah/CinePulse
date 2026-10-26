@@ -19,6 +19,9 @@ class SearchRequest(BaseModel):
     facets: Optional[List[str]] = Field(
         default=None, description="Facets to compute distributions for"
     )
+    disable_nlp: bool = Field(
+        default=False, description="Explicitly bypass NLP entity extraction if True"
+    )
 
 
 class SearchResultItem(BaseModel):
@@ -52,3 +55,7 @@ class SearchResponse(BaseModel):
     processing_time_ms: float
     hits: List[SearchResultItem]
     facet_distribution: Dict[str, Dict[str, int]] = Field(default_factory=dict)
+    nlp: Optional[Dict[str, Any]] = Field(
+        default=None, description="Extracted NLP entities, inferred filters, and query interpretation"
+    )
+

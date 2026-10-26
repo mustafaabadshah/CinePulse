@@ -18,6 +18,38 @@ export interface SearchResultItem {
   formatted?: Record<string, any>;
 }
 
+export interface ExtractedEntity {
+  text: string;
+  label: string;
+  start_char: number;
+  end_char: number;
+  confidence: number;
+  source: string;
+  resolved_id?: string;
+  canonical_name?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface QueryInterpretation {
+  original_query: string;
+  normalized_query: string;
+  recognized_entities: ExtractedEntity[];
+  episode_number?: number;
+  matched_program_id?: string;
+  matched_program_name?: string;
+  matched_genre?: string;
+  matched_channel?: string;
+  matched_content_type?: string;
+  matched_language?: string;
+  remaining_query: string;
+  inferred_filters: Record<string, any>;
+  is_nlp_assisted: boolean;
+  model_name?: string;
+  parser_version?: string;
+  diagnostics?: Record<string, any>;
+  fallback_applied?: boolean;
+}
+
 export interface SearchResponse {
   query: string;
   type: string;
@@ -29,6 +61,7 @@ export interface SearchResponse {
   processing_time_ms: number;
   hits: SearchResultItem[];
   facet_distribution: Record<string, Record<string, number>>;
+  nlp?: QueryInterpretation;
 }
 
 export interface Episode {

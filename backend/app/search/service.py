@@ -1,4 +1,6 @@
-"""Search service executing media catalog queries against Meilisearch with safe allowlisted filters."""
+"""Search service executing media catalog queries against Meilisearch with safe allowlisted filters and spaCy NLP grounding."""
+
+from __future__ import annotations
 
 import time
 from typing import Any, Dict, List, Optional
@@ -15,14 +17,22 @@ from app.search.indexes import (
     INDEX_EPISODES,
     INDEX_PROGRAMS,
 )
+from app.services.nlp.schemas import QueryInterpretation
+from app.services.nlp.service import NLPService, nlp_service as default_nlp_service
 from meilisearch.client import Client
 from sqlalchemy.orm import Session
 
 
 class SearchService:
-    def __init__(self, db: Session, client: Optional[Client] = None):
+    def __init__(
+        self,
+        db: Session,
+        client: Optional[Client] = None,
+        nlp_service: Optional[NLPService] = None,
+    ):
         self.db = db
         self.client = client or get_meili_client()
+        self.nlp = nlp_service or default_nlp_service
 
     def build_safe_filter_expression(
         self, filters: Dict[str, Any], allowed_fields: set
@@ -61,27 +71,160 @@ class SearchService:
         return " AND ".join(expressions) if expressions else None
 
     def search(self, req: SearchRequest) -> SearchResponse:
-        """Executes full-text search against the media catalog with allowlisted filters and facets."""
+        """Executes search against the media catalog with spaCy NLP query understanding and allowlisted filters."""
         start_time = time.perf_counter()
         target_type = req.type.lower()
         limit = min(req.limit, settings.max_search_limit)
         offset = max(0, req.offset)
-        query = req.q.strip()
+        raw_query = req.q.strip()
 
+        # -----------------------------------------------------------------
+        # 1. NLP Query Interpretation & Entity Grounding
+        # -----------------------------------------------------------------
+        interpretation: Optional[QueryInterpretation] = None
+        if raw_query and not req.disable_nlp and self.nlp:
+            try:
+                interpretation = self.nlp.parse_query(raw_query)
+            except Exception as nlp_exc:
+                logger.warning(f"Error during NLP query interpretation for '{raw_query}': {nlp_exc}")
+
+        # Determine queries and inferred filters
+        is_assisted = bool(interpretation and interpretation.is_nlp_assisted)
+        prog_query = raw_query
+        ep_query = raw_query
+
+        prog_inferred_filters: Dict[str, Any] = {}
+        ep_inferred_filters: Dict[str, Any] = {}
+
+        if is_assisted and interpretation:
+            # Programs index filtering
+            if interpretation.matched_channel:
+                prog_inferred_filters["channel_name"] = interpretation.matched_channel
+            if interpretation.matched_genre:
+                prog_inferred_filters["genre_list"] = interpretation.matched_genre.lower()
+            if interpretation.matched_language:
+                prog_inferred_filters["info_language"] = interpretation.matched_language.lower()
+
+            if interpretation.matched_program_name:
+                prog_query = interpretation.matched_program_name
+            elif interpretation.remaining_query:
+                prog_query = interpretation.remaining_query
+            elif interpretation.matched_content_type == "movie":
+                prog_query = "movie"
+            elif interpretation.matched_genre or interpretation.matched_channel:
+                prog_query = ""
+
+            # Episodes index filtering
+            if interpretation.matched_program_id:
+                ep_inferred_filters["program_id"] = interpretation.matched_program_id
+            if interpretation.matched_channel:
+                ep_inferred_filters["channel_name"] = interpretation.matched_channel
+            if interpretation.matched_genre:
+                ep_inferred_filters["genre_list"] = interpretation.matched_genre.lower()
+            if interpretation.matched_language:
+                ep_inferred_filters["language"] = interpretation.matched_language.lower()
+            if interpretation.episode_number is not None:
+                ep_inferred_filters["episode_number"] = interpretation.episode_number
+
+            # If program or episode is filtered, search using remaining keywords
+            if interpretation.remaining_query:
+                ep_query = interpretation.remaining_query
+            elif interpretation.matched_content_type == "movie":
+                ep_query = "movie"
+            elif interpretation.matched_program_id or interpretation.episode_number is not None:
+                # Fully grounded query (e.g. "Ehd E Wafa Episode 3") -> empty query uses exact filters
+                ep_query = ""
+            elif interpretation.matched_genre or interpretation.matched_channel:
+                ep_query = ""
+
+        # -----------------------------------------------------------------
+        # 2. Execute Primary Search
+        # -----------------------------------------------------------------
+        hits, total_hits, facet_dist = self._execute_search_passes(
+            target_type=target_type,
+            limit=limit,
+            offset=offset,
+            raw_filters=req.filters or {},
+            sort=req.sort,
+            prog_query=prog_query,
+            ep_query=ep_query,
+            prog_inferred_filters=prog_inferred_filters,
+            ep_inferred_filters=ep_inferred_filters,
+        )
+
+        # -----------------------------------------------------------------
+        # 3. Safe Fallback to Plain Text if Assisted Search Produced Zero Hits
+        # -----------------------------------------------------------------
+        used_fallback = False
+        if is_assisted and total_hits == 0 and raw_query:
+            logger.info(f"Assisted search produced 0 hits for '{raw_query}'. Falling back to baseline search.")
+            hits, total_hits, facet_dist = self._execute_search_passes(
+                target_type=target_type,
+                limit=limit,
+                offset=offset,
+                raw_filters=req.filters or {},
+                sort=req.sort,
+                prog_query=raw_query,
+                ep_query=raw_query,
+                prog_inferred_filters={},
+                ep_inferred_filters={},
+            )
+            used_fallback = True
+
+        duration_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
+
+        # Slice unified results if "all"
+        final_hits = hits[offset : offset + limit] if target_type == "all" else hits
+        page = (offset // limit) + 1 if limit > 0 else 1
+        total_pages = (total_hits + limit - 1) // limit if limit > 0 else 1
+
+        nlp_payload = None
+        if interpretation:
+            nlp_payload = interpretation.model_dump()
+            if used_fallback:
+                nlp_payload["fallback_applied"] = True
+
+        return SearchResponse(
+            query=raw_query,
+            type=target_type,
+            total_hits=total_hits,
+            offset=offset,
+            limit=limit,
+            page=page,
+            total_pages=total_pages,
+            processing_time_ms=duration_ms,
+            hits=final_hits,
+            facet_distribution=facet_dist,
+            nlp=nlp_payload,
+        )
+
+    def _execute_search_passes(
+        self,
+        target_type: str,
+        limit: int,
+        offset: int,
+        raw_filters: Dict[str, Any],
+        sort: Optional[str],
+        prog_query: str,
+        ep_query: str,
+        prog_inferred_filters: Dict[str, Any],
+        ep_inferred_filters: Dict[str, Any],
+    ) -> tuple[List[SearchResultItem], int, Dict[str, Dict[str, int]]]:
+        """Executes index queries against programs and episodes with specific filters."""
         hits: List[SearchResultItem] = []
         total_hits = 0
         facet_distribution: Dict[str, Dict[str, int]] = {}
 
         # -----------------------------------------------------------------
-        # 1. Programs & Channels index query
+        # Programs & Channels pass
         # -----------------------------------------------------------------
         if target_type in ("all", "programs", "channels"):
-            filters_dict = dict(req.filters or {})
+            combined_filters = {**prog_inferred_filters, **raw_filters}
             if target_type == "channels":
-                filters_dict["type"] = "channel"
+                combined_filters["type"] = "channel"
 
             filter_str = self.build_safe_filter_expression(
-                filters_dict, settings.allowed_program_filters
+                combined_filters, settings.allowed_program_filters
             )
             prog_limit = limit if target_type in ("programs", "channels") else min(limit, 6)
             prog_offset = offset if target_type in ("programs", "channels") else 0
@@ -102,11 +245,11 @@ class SearchService:
             }
             if filter_str:
                 search_params["filter"] = filter_str
-            if req.sort and target_type in ("programs", "channels"):
-                search_params["sort"] = [req.sort]
+            if sort and target_type in ("programs", "channels"):
+                search_params["sort"] = [sort]
 
             try:
-                res = self.client.index(INDEX_PROGRAMS).search(query, search_params)
+                res = self.client.index(INDEX_PROGRAMS).search(prog_query, search_params)
                 prog_total = res.get("estimatedTotalHits", len(res.get("hits", [])))
                 total_hits += prog_total
 
@@ -146,11 +289,12 @@ class SearchService:
                 logger.error(f"Error querying program index: {e}")
 
         # -----------------------------------------------------------------
-        # 2. Episodes index query
+        # Episodes pass
         # -----------------------------------------------------------------
         if target_type in ("all", "episodes"):
+            combined_filters = {**ep_inferred_filters, **raw_filters}
             filter_str = self.build_safe_filter_expression(
-                req.filters or {}, settings.allowed_episode_filters
+                combined_filters, settings.allowed_episode_filters
             )
             ep_limit = limit if target_type == "episodes" else limit
             ep_offset = offset if target_type == "episodes" else 0
@@ -180,11 +324,11 @@ class SearchService:
             }
             if filter_str:
                 search_params["filter"] = filter_str
-            if req.sort and target_type == "episodes":
-                search_params["sort"] = [req.sort]
+            if sort and target_type == "episodes":
+                search_params["sort"] = [sort]
 
             try:
-                res = self.client.index(INDEX_EPISODES).search(query, search_params)
+                res = self.client.index(INDEX_EPISODES).search(ep_query, search_params)
                 ep_total = res.get("estimatedTotalHits", len(res.get("hits", [])))
                 total_hits += ep_total
 
@@ -225,27 +369,4 @@ class SearchService:
             except Exception as e:
                 logger.error(f"Error querying episode index: {e}")
 
-        # Compute elapsed time
-        duration_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
-
-        # Slice unified results if "all"
-        if target_type == "all":
-            final_hits = hits[offset : offset + limit]
-        else:
-            final_hits = hits
-
-        page = (offset // limit) + 1 if limit > 0 else 1
-        total_pages = (total_hits + limit - 1) // limit if limit > 0 else 1
-
-        return SearchResponse(
-            query=query,
-            type=target_type,
-            total_hits=total_hits,
-            offset=offset,
-            limit=limit,
-            page=page,
-            total_pages=total_pages,
-            processing_time_ms=duration_ms,
-            hits=final_hits,
-            facet_distribution=facet_distribution,
-        )
+        return hits, total_hits, facet_distribution
