@@ -40,6 +40,14 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
   const durationText = formatDuration(item.duration_seconds, item.duration);
   const isTeaser = isEpisode && isTeaserOrClip(item.duration_seconds);
 
+  // Guard against duplicate cast list shown in snippet
+  const isDuplicateCastSnippet =
+    !isEpisode &&
+    displaySnippet &&
+    item.raw?.info_staring &&
+    (displaySnippet.toLowerCase().includes(item.raw.info_staring.toLowerCase().slice(0, 15)) ||
+      displaySnippet.toLowerCase().startsWith("starring:"));
+
   return (
     <article
       className="card-glass animate-fade-in"
@@ -71,6 +79,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
               <span>Show</span>
             </span>
           )}
+          {" "}
 
           {/* Episode Specific Badges */}
           {isEpisode && (
@@ -90,9 +99,11 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   EP {item.raw.episode_number}
                 </span>
               )}
+              {" "}
               <span className={`badge ${item.is_free ? "badge-free" : "badge-pro"}`}>
                 <span>{item.is_free ? "Free" : "Premium"}</span>
               </span>
+              {" "}
 
               {item.content_tier && (
                 <span
@@ -109,6 +120,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   {item.content_tier}
                 </span>
               )}
+              {" "}
 
               {durationText && (
                 <span
@@ -124,6 +136,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   <span>{durationText}</span>
                 </span>
               )}
+              {" "}
 
               {isTeaser && (
                 <span
@@ -139,6 +152,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
                   Short Clip
                 </span>
               )}
+              {" "}
 
               {item.views !== undefined && (
                 <span
@@ -160,36 +174,40 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           {/* Program/Channel Badges */}
           {!isEpisode && (
             <>
-              {" "}
               {item.raw?.info_language && (
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    padding: "2px 7px",
-                    borderRadius: "4px",
-                    background: "rgba(255, 255, 255, 0.08)",
-                    color: "var(--text-secondary)",
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {item.raw.info_language}
-                </span>
+                <>
+                  <span
+                    style={{
+                      fontSize: "0.72rem",
+                      padding: "2px 7px",
+                      borderRadius: "4px",
+                      background: "rgba(255, 255, 255, 0.08)",
+                      color: "var(--text-secondary)",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {item.raw.info_language}
+                  </span>
+                  {" "}
+                </>
               )}
-              {" "}
               {item.raw?.channel_name && (
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    padding: "2px 7px",
-                    borderRadius: "4px",
-                    background: "rgba(229, 9, 20, 0.12)",
-                    color: "#fca5a5",
-                    fontWeight: 600,
-                  }}
-                >
-                  {item.raw.channel_name}
-                </span>
+                <>
+                  <span
+                    style={{
+                      fontSize: "0.72rem",
+                      padding: "2px 7px",
+                      borderRadius: "4px",
+                      background: "rgba(229, 9, 20, 0.12)",
+                      color: "#fca5a5",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {item.raw.channel_name}
+                  </span>
+                  {" "}
+                </>
               )}
             </>
           )}
@@ -207,6 +225,8 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
       <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
         <Link
           to={detailPath}
+          aria-label={`View ${item.title}`}
+          tabIndex={-1}
           style={{
             flexShrink: 0,
             width: isEpisode ? "140px" : "110px",
@@ -214,6 +234,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
             borderRadius: "8px",
             overflow: "hidden",
             display: "block",
+            userSelect: "none",
             transition: "transform var(--transition-fast)",
           }}
         >
@@ -252,7 +273,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           )}
 
           {/* Description snippet */}
-          {displaySnippet && (
+          {displaySnippet && !isDuplicateCastSnippet && (
             <p
               style={{
                 color: "var(--text-secondary)",
@@ -274,9 +295,12 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
       {item.tags && item.tags.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "2px" }}>
           {item.tags.slice(0, 5).map((tag, idx) => (
-            <span key={idx} className="tag-genre">
-              {tag}
-            </span>
+            <React.Fragment key={idx}>
+              <span className="tag-genre">
+                {tag}
+              </span>
+              {" "}
+            </React.Fragment>
           ))}
           {item.tags.length > 5 && (
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", alignSelf: "center" }}>

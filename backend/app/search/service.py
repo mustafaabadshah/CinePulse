@@ -291,7 +291,7 @@ class SearchService:
                     subtitle = " • ".join(sub_parts) if sub_parts else item.get("type", "program").title()
 
                     cast_str = item.get("info_staring")
-                    snippet = f"Starring: {cast_str}" if cast_str else (item.get("info_meta_keywords") or "")
+                    snippet = item.get("info_meta_keywords") or ""
                     tags = item.get("genre_list") or ([item.get("info_genre")] if item.get("info_genre") else [])
 
                     hits.append(

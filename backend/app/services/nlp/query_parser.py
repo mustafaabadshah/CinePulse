@@ -150,8 +150,7 @@ class QueryParser:
                             matched_program_id = resolved_id
                             matched_program_name = canonical_name
                         else:
-                            # Fuzzy/statistical fallback
-                            confidence = 0.75
+                            confidence = 0.5
                             canonical_name = ent_text
 
                     elif label == EntityType.CHANNEL.value:
@@ -161,7 +160,7 @@ class QueryParser:
                             resolved_id = chan_name
                             matched_channel = chan_name
                         else:
-                            confidence = 0.75
+                            confidence = 0.5
 
                     elif label == EntityType.GENRE.value:
                         genre_name = self.kb.genres_by_key.get(ent_key)
@@ -172,7 +171,7 @@ class QueryParser:
                             if genre_name not in matched_genres:
                                 matched_genres.append(genre_name)
                         else:
-                            confidence = 0.75
+                            confidence = 0.5
 
                     elif label == EntityType.CONTENT_TYPE.value:
                         ct_name = self.kb.content_types_by_key.get(ent_key)
@@ -180,6 +179,8 @@ class QueryParser:
                             canonical_name = ct_name
                             resolved_id = ct_name
                             matched_content_type = ct_name
+                        else:
+                            confidence = 0.5
 
                     elif label == EntityType.LANGUAGE.value:
                         lang_name = self.kb.languages_by_key.get(ent_key)
@@ -187,6 +188,8 @@ class QueryParser:
                             canonical_name = lang_name
                             resolved_id = lang_name
                             matched_language = lang_name
+                        else:
+                            confidence = 0.5
 
                     elif label == EntityType.PERSON.value:
                         actor_name = self.kb.actors_by_key.get(ent_key)
@@ -194,6 +197,8 @@ class QueryParser:
                             canonical_name = actor_name
                             resolved_id = actor_name
                             matched_person = actor_name
+                        else:
+                            confidence = 0.5
 
                     if confidence >= self.confidence_threshold:
                         consumed_char_spans.append((ent.start_char, ent.end_char))
@@ -259,7 +264,21 @@ class QueryParser:
         if matched_person:
             inferred_filters["starring_list"] = matched_person
 
-        is_nlp_assisted = bool(extracted_entities or episode_number is not None)
+        # Fallback: if all query tokens were consumed but NO catalog filters were produced,
+        # restore the normalized query so search has meaningful full-text keywords.
+        if not remaining_query and not inferred_filters and norm_query:
+            remaining_query = norm_query
+
+        is_nlp_assisted = bool(
+            inferred_filters
+            or episode_number is not None
+            or matched_program_id is not None
+            or matched_genre is not None
+            or matched_channel is not None
+            or matched_content_type is not None
+            or matched_person is not None
+            or matched_language is not None
+        )
         elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 3)
 
         return QueryInterpretation(

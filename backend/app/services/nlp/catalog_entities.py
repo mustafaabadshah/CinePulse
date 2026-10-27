@@ -24,29 +24,53 @@ _EXCLUDED_SHORT_WORDS: Set[str] = {
 
 # Semantic OTT synonyms mapping common conversational phrases to catalog genres & content types
 OTT_INTENT_SYNONYMS = [
-    # Comedy
-    (EntityType.GENRE, ["funny", "hilarious", "humor", "humorous", "comedy", "comedies", "jokes", "standup", "fun"], "Comedy"),
-    # Horror
-    (EntityType.GENRE, ["horror", "scary", "spooky", "creepy", "ghost", "haunted"], "Horror"),
-    # Romance
-    (EntityType.GENRE, ["romance", "romantic", "love story", "love stories", "ishq", "pyar"], "Romance"),
-    # Action & Thriller
-    (EntityType.GENRE, ["action", "thriller", "suspense", "mystery", "fight"], "Action"),
+    # Mystery
+    (EntityType.GENRE, ["mystery", "mysteries", "mystry", "mistery", "detective", "clues", "whodunit", "secret", "mysterious"], "mystery"),
+    # Thriller
+    (EntityType.GENRE, ["thriller", "thrillers", "suspenseful", "edge of seat", "thril", "thriler"], "thriller"),
+    # Suspense
+    (EntityType.GENRE, ["suspense", "suspense drama"], "suspense"),
+    # Action
+    (EntityType.GENRE, ["action", "fight", "fighting", "combat", "stunt", "stunts", "martial arts"], "action"),
     # Crime
-    (EntityType.GENRE, ["crime", "murder", "police", "investigation", "detective"], "Crime"),
-    # Kids
-    (EntityType.GENRE, ["kids", "children", "cartoon", "cartoons", "animated", "animation"], "Kids"),
-    # News
-    (EntityType.GENRE, ["news", "bulletin", "khabar", "khabrain", "current affairs"], "News"),
-    # Sports
-    (EntityType.GENRE, ["sports", "cricket", "match", "tournament", "championship", "psl", "world cup"], "Sports"),
+    (EntityType.GENRE, ["crime", "murder", "police", "investigation", "cop", "cops", "gangster", "mafia", "underworld"], "crime"),
+    # Horror
+    (EntityType.GENRE, ["horror", "scary", "spooky", "creepy", "ghost", "haunted", "khauf", "darawna", "horor"], "horror"),
+    # Comedy
+    (EntityType.GENRE, ["funny", "hilarious", "humor", "humorous", "comedy", "comedies", "jokes", "standup", "fun", "hasna", "latifay", "comdy", "comady"], "comedy"),
+    # Romance
+    (EntityType.GENRE, ["romance", "romantic", "love story", "love stories", "ishq", "pyar", "muhabbat", "romnce"], "romance"),
     # Drama
-    (EntityType.GENRE, ["drama", "dramas", "serial", "serials", "soap"], "Drama"),
+    (EntityType.GENRE, ["drama", "dramas", "serial", "serials", "soap", "afsaana", "darma", "dram"], "drama"),
+    # Kids
+    (EntityType.GENRE, ["kids", "children", "cartoon", "cartoons", "animated", "animation", "baccho"], "kids"),
+    # News
+    (EntityType.GENRE, ["news", "bulletin", "khabar", "khabrain", "current affairs", "headline", "headlines"], "news"),
+    # Sports
+    (EntityType.GENRE, ["sports", "cricket", "match", "tournament", "championship", "psl", "world cup", "football"], "sports"),
+    # Adventure
+    (EntityType.GENRE, ["adventure", "adventures", "quest", "mission"], "adventure"),
+    # War
+    (EntityType.GENRE, ["war", "military", "army", "soldier", "battle"], "war"),
+    # Science Fiction
+    (EntityType.GENRE, ["sci fi", "sci-fi", "science fiction", "scifi", "alien", "space"], "science fiction"),
+    # Automotive
+    (EntityType.GENRE, ["automotive", "car", "cars", "vehicle", "vehicles", "automobile", "automobiles", "bike", "bikes"], "automotive"),
+    # Entertainment
+    (EntityType.GENRE, ["entertainment", "entertaining"], "entertainment"),
+    # Lifestyle
+    (EntityType.GENRE, ["lifestyle", "cooking", "food", "recipe", "recipes", "cuisine"], "lifestyle"),
+    # Islamic / Religious
+    (EntityType.GENRE, ["islamic", "religious", "naat", "bayaan", "deen"], "islamic"),
+    # Emotional
+    (EntityType.GENRE, ["emotional", "sad", "crying", "heartfelt", "sentimental", "touching"], "emotional"),
+    # Culture
+    (EntityType.GENRE, ["culture", "cultural", "heritage", "tradition"], "culture"),
     
     # Content Types / Formats
-    (EntityType.CONTENT_TYPE, ["movie", "movies", "film", "films", "cinema", "feature film"], "movie"),
-    (EntityType.CONTENT_TYPE, ["telefilm", "telefilms", "tv film"], "telefilm"),
-    (EntityType.CONTENT_TYPE, ["short film", "short films", "shorts"], "short film"),
+    (EntityType.CONTENT_TYPE, ["movie", "movies", "film", "films", "cinema", "feature film", "movi", "moive"], "movie"),
+    (EntityType.CONTENT_TYPE, ["telefilm", "telefilms", "tv film", "teliflm", "teleflm"], "telefilm"),
+    (EntityType.CONTENT_TYPE, ["short film", "short films", "shorts", "shortfilm"], "short film"),
     (EntityType.CONTENT_TYPE, ["series", "tv series", "tv show", "web series"], "series"),
     (EntityType.CONTENT_TYPE, ["podcast", "podcasts"], "podcast"),
     (EntityType.CONTENT_TYPE, ["documentary", "documentaries", "docu"], "documentary"),
@@ -54,11 +78,6 @@ OTT_INTENT_SYNONYMS = [
     (EntityType.CONTENT_TYPE, ["highlights", "match highlights", "game highlights"], "highlights"),
     (EntityType.CONTENT_TYPE, ["trailer", "trailers", "teaser", "teasers", "promo", "promos"], "teaser"),
     (EntityType.CONTENT_TYPE, ["song", "songs", "music", "ost", "music video", "track", "tracks"], "music"),
-    
-    # Additional Catalog Genres
-    (EntityType.GENRE, ["automotive", "car", "cars", "vehicle", "vehicles", "automobile", "automobiles", "bike", "bikes"], "automotive"),
-    (EntityType.GENRE, ["entertainment", "entertaining"], "entertainment"),
-    (EntityType.GENRE, ["lifestyle", "cooking", "food", "recipe", "recipes"], "lifestyle"),
 ]
 
 

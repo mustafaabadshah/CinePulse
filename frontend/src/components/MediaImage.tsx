@@ -107,8 +107,17 @@ export const MediaImage: React.FC<MediaImageProps> = ({
           )}
         </div>
 
-        {/* Top Header Badge */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 1 }}>
+        {/* Top Header Badge (Decorative placeholder artwork) */}
+        <div
+          aria-hidden="true"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            zIndex: 1,
+            userSelect: "none",
+          }}
+        >
           <span
             style={{
               display: "inline-flex",
@@ -126,6 +135,7 @@ export const MediaImage: React.FC<MediaImageProps> = ({
                 ? "rgba(59, 130, 246, 0.25)"
                 : "rgba(229, 9, 20, 0.25)",
               color: isChannel ? "#c084fc" : isProgram ? "#93c5fd" : "#fca5a5",
+              userSelect: "none",
             }}
           >
             {isChannel ? (
