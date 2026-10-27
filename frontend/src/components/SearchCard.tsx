@@ -19,9 +19,9 @@ interface SearchCardProps {
 export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
   const isEpisode = item.type === "episode";
   const isChannel = !isEpisode && (item.raw?.type === "channel" || item.raw?.info_content_type === "channel");
-  
-  const detailPath = isEpisode 
-    ? `/episodes/${encodeURIComponent(item.id)}` 
+
+  const detailPath = isEpisode
+    ? `/episodes/${encodeURIComponent(item.id)}`
     : `/programs/${encodeURIComponent(item.id)}`;
 
   // Highlighted matching text from Meilisearch formatted object
@@ -237,7 +237,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           </h3>
 
           {/* Program name connection for episodes */}
-          {item.program_name && (
+          {isEpisode && item.program_name && (
             <div style={{ color: "var(--accent-red)", fontSize: "0.85rem", fontWeight: 600, marginBottom: "6px" }}>
               Show: {item.program_name}
             </div>

@@ -37,10 +37,13 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "genre_list",
             "language",
             "channel_name",
+            "content_type",
+            "content_type_list",
             "region",
             "is_vertical",
             "program_id",
             "episode_number",
+            "stars_list",
         ],
         "sortable_attributes": [
             "views",
@@ -62,6 +65,8 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "is_free",
             "is_enable",
             "content_tier",
+            "content_type",
+            "content_type_list",
             "genre",
             "genre_list",
             "region",
@@ -108,6 +113,8 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "genre_list",
             "channel_name",
             "info_content_type",
+            "content_type_list",
+            "starring_list",
         ],
         "sortable_attributes": [
             "name",
@@ -123,6 +130,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
             "genre_list",
             "info_meta_keywords",
             "info_content_type",
+            "content_type_list",
             "info_staring",
             "starring_list",
             "thumbnail",
@@ -226,6 +234,7 @@ def program_to_search_doc(p: Program, thumbnail: Optional[str] = None) -> Dict[s
         "genre_list": split_tags(p.info_genre),
         "info_meta_keywords": p.info_meta_keywords,
         "info_content_type": p.info_content_type,
+        "content_type_list": split_tags(p.info_content_type),
         "info_staring": p.info_staring,
         "starring_list": split_tags(p.info_staring),
         "thumbnail": thumbnail,
@@ -239,6 +248,7 @@ def episode_to_search_doc(ep: Episode, program: Optional[Program] = None) -> Dic
     chan_name = ep.channel_name or (program.channel_name if program else None)
     lang = program.info_language if program else None
     stars = program.info_staring if program else None
+    content_type = ep.content_type or (program.info_content_type if program else None)
 
     return {
         "id": ep.id,
@@ -254,6 +264,8 @@ def episode_to_search_doc(ep: Episode, program: Optional[Program] = None) -> Dic
         "is_free": ep.is_free,
         "is_enable": ep.is_enable,
         "content_tier": ep.content_tier,
+        "content_type": content_type,
+        "content_type_list": split_tags(content_type),
         "genre": ep.genre,
         "genre_list": split_tags(ep.genre),
         "region": ep.region,

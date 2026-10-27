@@ -38,8 +38,10 @@ export interface QueryInterpretation {
   matched_program_id?: string;
   matched_program_name?: string;
   matched_genre?: string;
+  matched_genres?: string[];
   matched_channel?: string;
   matched_content_type?: string;
+  matched_person?: string;
   matched_language?: string;
   remaining_query: string;
   inferred_filters: Record<string, any>;

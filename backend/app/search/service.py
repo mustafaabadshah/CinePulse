@@ -97,45 +97,66 @@ class SearchService:
         ep_inferred_filters: Dict[str, Any] = {}
 
         if is_assisted and interpretation:
-            # Programs index filtering
+            # 1. Programs index filtering
             if interpretation.matched_channel:
                 prog_inferred_filters["channel_name"] = interpretation.matched_channel
-            if interpretation.matched_genre:
+            if interpretation.matched_genres:
+                prog_inferred_filters["genre_list"] = (
+                    [g.lower() for g in interpretation.matched_genres]
+                    if len(interpretation.matched_genres) > 1
+                    else interpretation.matched_genres[0].lower()
+                )
+            elif interpretation.matched_genre:
                 prog_inferred_filters["genre_list"] = interpretation.matched_genre.lower()
+            if interpretation.matched_content_type:
+                prog_inferred_filters["content_type_list"] = interpretation.matched_content_type.lower()
             if interpretation.matched_language:
                 prog_inferred_filters["info_language"] = interpretation.matched_language.lower()
+            if interpretation.matched_person:
+                prog_inferred_filters["starring_list"] = interpretation.matched_person
 
-            if interpretation.matched_program_name:
-                prog_query = interpretation.matched_program_name
-            elif interpretation.remaining_query:
-                prog_query = interpretation.remaining_query
-            elif interpretation.matched_content_type == "movie":
-                prog_query = "movie"
-            elif interpretation.matched_genre or interpretation.matched_channel:
-                prog_query = ""
-
-            # Episodes index filtering
+            # 2. Episodes index filtering
             if interpretation.matched_program_id:
                 ep_inferred_filters["program_id"] = interpretation.matched_program_id
             if interpretation.matched_channel:
                 ep_inferred_filters["channel_name"] = interpretation.matched_channel
-            if interpretation.matched_genre:
+            if interpretation.matched_genres:
+                ep_inferred_filters["genre_list"] = (
+                    [g.lower() for g in interpretation.matched_genres]
+                    if len(interpretation.matched_genres) > 1
+                    else interpretation.matched_genres[0].lower()
+                )
+            elif interpretation.matched_genre:
                 ep_inferred_filters["genre_list"] = interpretation.matched_genre.lower()
+            if interpretation.matched_content_type:
+                ep_inferred_filters["content_type_list"] = interpretation.matched_content_type.lower()
             if interpretation.matched_language:
                 ep_inferred_filters["language"] = interpretation.matched_language.lower()
             if interpretation.episode_number is not None:
                 ep_inferred_filters["episode_number"] = interpretation.episode_number
+            if interpretation.matched_person:
+                ep_inferred_filters["stars_list"] = interpretation.matched_person
 
-            # If program or episode is filtered, search using remaining keywords
-            if interpretation.remaining_query:
+            # 3. Combined query routing between semantic filters and text search
+            if interpretation.matched_program_name and not interpretation.remaining_query:
+                # Fully identified show title (e.g., "Ehd E Wafa" or "Parizaad")
+                prog_query = interpretation.matched_program_name
+                # If episode program_id filter is applied, query "" retrieves episodes ordered by sequence
+                ep_query = "" if interpretation.matched_program_id else interpretation.matched_program_name
+            elif interpretation.remaining_query:
+                # Specific keywords alongside filters (e.g. "funny pakistani movie", "live stream", "car review")
+                prog_query = interpretation.remaining_query
                 ep_query = interpretation.remaining_query
-            elif interpretation.matched_content_type == "movie":
-                ep_query = "movie"
             elif interpretation.matched_program_id or interpretation.episode_number is not None:
-                # Fully grounded query (e.g. "Ehd E Wafa Episode 3") -> empty query uses exact filters
+                prog_query = interpretation.matched_program_name or ""
                 ep_query = ""
-            elif interpretation.matched_genre or interpretation.matched_channel:
+            elif prog_inferred_filters or ep_inferred_filters:
+                # Pure semantic intent (e.g. "funny movie" -> genre=comedy, content_type=movie)
+                prog_query = ""
                 ep_query = ""
+            else:
+                prog_query = interpretation.normalized_query
+                ep_query = interpretation.normalized_query
 
         # -----------------------------------------------------------------
         # 2. Execute Primary Search
@@ -255,7 +276,11 @@ class SearchService:
 
                 if "facetDistribution" in res:
                     for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
+                        norm_k = "language" if facet_k == "info_language" else ("genre" if facet_k == "info_genre" else facet_k)
+                        if norm_k not in facet_distribution:
+                            facet_distribution[norm_k] = {}
+                        for val_k, val_cnt in facet_v.items():
+                            facet_distribution[norm_k][val_k] = facet_distribution[norm_k].get(val_k, 0) + val_cnt
 
                 for item in res.get("hits", []):
                     formatted = item.get("_formatted", {})
@@ -280,7 +305,7 @@ class SearchService:
                             source_url=item.get("thumbnail"),
                             thumbnail=item.get("thumbnail"),
                             channel_name=item.get("channel_name"),
-                            program_name=item.get("name"),
+                            program_name=None,
                             raw=item,
                             formatted=formatted,
                         )
@@ -334,7 +359,10 @@ class SearchService:
 
                 if "facetDistribution" in res:
                     for facet_k, facet_v in res["facetDistribution"].items():
-                        facet_distribution.setdefault(facet_k, {}).update(facet_v)
+                        if facet_k not in facet_distribution:
+                            facet_distribution[facet_k] = {}
+                        for val_k, val_cnt in facet_v.items():
+                            facet_distribution[facet_k][val_k] = facet_distribution[facet_k].get(val_k, 0) + val_cnt
 
                 for item in res.get("hits", []):
                     formatted = item.get("_formatted", {})

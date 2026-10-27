@@ -61,13 +61,17 @@ class Settings(BaseSettings):
         "info_language",
         "channel_name",
         "info_content_type",
+        "content_type_list",
         "info_genre",
         "genre_list",
+        "starring_list",
     }
 
     allowed_episode_filters: Set[str] = {
         "is_free",
         "content_tier",
+        "content_type",
+        "content_type_list",
         "genre",
         "genre_list",
         "language",
@@ -77,6 +81,7 @@ class Settings(BaseSettings):
         "program_id",
         "is_enable",
         "episode_number",
+        "stars_list",
     }
 
     @property

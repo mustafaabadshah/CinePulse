@@ -29,6 +29,8 @@ def execute_search(
     region: Optional[str] = Query(default=None, description="Distribution region filter"),
     is_vertical: Optional[str] = Query(default=None, description="Vertical video filter ('mini')"),
     program_id: Optional[str] = Query(default=None, description="Parent program filter"),
+    content_type: Optional[str] = Query(default=None, description="Content format filter (e.g. movie, drama, series)"),
+    disable_nlp: bool = Query(default=False, description="Explicitly bypass NLP entity extraction if True"),
     search_service: SearchService = Depends(get_search_service),
 ) -> SearchResponse:
     """Executes a search query against Meilisearch with safe allowlisted filters."""
@@ -38,13 +40,15 @@ def execute_search(
     if content_tier is not None:
         filters["content_tier"] = content_tier
     if genre is not None:
-        filters["genre"] = genre
+        filters["genre_list"] = genre
     if channel_name is not None:
         filters["channel_name"] = channel_name
     if info_language is not None:
         filters["info_language"] = info_language
     if info_content_type is not None:
-        filters["info_content_type"] = info_content_type
+        filters["content_type_list"] = info_content_type
+    elif content_type is not None:
+        filters["content_type_list"] = content_type
     if region is not None:
         filters["region"] = region
     if is_vertical is not None:
@@ -59,5 +63,6 @@ def execute_search(
         offset=offset,
         sort=sort,
         filters=filters if filters else None,
+        disable_nlp=disable_nlp,
     )
     return search_service.search(req)

@@ -385,8 +385,30 @@ export const SearchResultsPage: React.FC = () => {
                 </span>
               )}
 
+              {/* Cast / Person Entity */}
+              {results.nlp.matched_person && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.16)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Actor:</span>
+                  <strong style={{ color: "#ffffff" }}>{results.nlp.matched_person}</strong>
+                </span>
+              )}
+
               {/* Genre Entity */}
-              {results.nlp.matched_genre && (
+              {(results.nlp.matched_genres && results.nlp.matched_genres.length > 0
+                ? results.nlp.matched_genres.join(", ")
+                : results.nlp.matched_genre) && (
                 <span
                   style={{
                     display: "inline-flex",
@@ -401,7 +423,11 @@ export const SearchResultsPage: React.FC = () => {
                   }}
                 >
                   <span style={{ color: "var(--text-muted)" }}>Genre:</span>
-                  <strong style={{ color: "#ffffff" }}>{results.nlp.matched_genre}</strong>
+                  <strong style={{ color: "#ffffff" }}>
+                    {results.nlp.matched_genres && results.nlp.matched_genres.length > 0
+                      ? results.nlp.matched_genres.join(", ")
+                      : results.nlp.matched_genre}
+                  </strong>
                 </span>
               )}
 
@@ -422,6 +448,25 @@ export const SearchResultsPage: React.FC = () => {
                 >
                   <span style={{ color: "var(--text-muted)" }}>Format:</span>
                   <strong style={{ color: "#ffffff", textTransform: "capitalize" }}>{results.nlp.matched_content_type}</strong>
+                </span>
+              )}
+
+              {/* Fallback Broadened Search Indicator */}
+              {results.nlp.fallback_applied && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    background: "rgba(245, 158, 11, 0.12)",
+                    border: "1px solid rgba(245, 158, 11, 0.3)",
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.82rem",
+                    color: "#fcd34d",
+                  }}
+                >
+                  <span>Broadened Search</span>
                 </span>
               )}
 

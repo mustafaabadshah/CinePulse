@@ -49,8 +49,16 @@ OTT_INTENT_SYNONYMS = [
     (EntityType.CONTENT_TYPE, ["short film", "short films", "shorts"], "short film"),
     (EntityType.CONTENT_TYPE, ["series", "tv series", "tv show", "web series"], "series"),
     (EntityType.CONTENT_TYPE, ["podcast", "podcasts"], "podcast"),
+    (EntityType.CONTENT_TYPE, ["documentary", "documentaries", "docu"], "documentary"),
+    (EntityType.CONTENT_TYPE, ["talk show", "talkshow", "talk shows", "interview", "interviews"], "talk show"),
+    (EntityType.CONTENT_TYPE, ["highlights", "match highlights", "game highlights"], "highlights"),
     (EntityType.CONTENT_TYPE, ["trailer", "trailers", "teaser", "teasers", "promo", "promos"], "teaser"),
-    (EntityType.CONTENT_TYPE, ["song", "songs", "music", "ost", "music video"], "music"),
+    (EntityType.CONTENT_TYPE, ["song", "songs", "music", "ost", "music video", "track", "tracks"], "music"),
+    
+    # Additional Catalog Genres
+    (EntityType.GENRE, ["automotive", "car", "cars", "vehicle", "vehicles", "automobile", "automobiles", "bike", "bikes"], "automotive"),
+    (EntityType.GENRE, ["entertainment", "entertaining"], "entertainment"),
+    (EntityType.GENRE, ["lifestyle", "cooking", "food", "recipe", "recipes"], "lifestyle"),
 ]
 
 

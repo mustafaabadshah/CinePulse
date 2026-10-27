@@ -24,11 +24,18 @@ _EPISODE_PATTERNS = [
 
 # Patterns for conversational intent, stop-words, and OTT discovery fillers
 _CONVERSATIONAL_INTENT_PATTERNS = [
-    re.compile(r"\b(?:i\s+(?:want|would\s+like)\s+to\s+(?:watch|see|stream|find|play|get)|can\s+(?:i|you)\s+(?:show|watch|find|play)|please\s+(?:show|play|find)|show\s+me|find\s+me|looking\s+for|search\s+for)\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:i\s+(?:want|would\s+like|need)\s+to\s+(?:watch|see|stream|find|play|get)|can\s+(?:i|you)\s+(?:show|watch|find|play|stream)|please\s+(?:show|play|find|stream)|show\s+me|find\s+me|search\s+for|looking\s+for|give\s+me|stream|watch|play|something)\b",
+        re.IGNORECASE,
+    ),
     re.compile(r"\b(?:online|stream|hd|watch|free)\b", re.IGNORECASE),
 ]
 
 _DANGLING_PUNCT_RE = re.compile(r"^[^\w\s]+|[^\w\s]+$")
+_DANGLING_PREPOSITIONS_RE = re.compile(
+    r"^(?:with|starring|featuring|in|of|by|about|and|or|for)\s+|\s+(?:with|starring|featuring|in|of|by|about|and|or|for)$",
+    re.IGNORECASE,
+)
 _WHITESPACE_RE = re.compile(r"\s+")
 
 
@@ -109,7 +116,9 @@ class QueryParser:
         matched_program_name: Optional[str] = None
         matched_channel: Optional[str] = None
         matched_genre: Optional[str] = None
+        matched_genres: List[str] = []
         matched_content_type: Optional[str] = None
+        matched_person: Optional[str] = None
         matched_language: Optional[str] = None
 
         if self.nlp is not None:
@@ -160,6 +169,8 @@ class QueryParser:
                             canonical_name = genre_name
                             resolved_id = genre_name
                             matched_genre = genre_name
+                            if genre_name not in matched_genres:
+                                matched_genres.append(genre_name)
                         else:
                             confidence = 0.75
 
@@ -182,6 +193,7 @@ class QueryParser:
                         if actor_name:
                             canonical_name = actor_name
                             resolved_id = actor_name
+                            matched_person = actor_name
 
                     if confidence >= self.confidence_threshold:
                         consumed_char_spans.append((ent.start_char, ent.end_char))
@@ -232,14 +244,20 @@ class QueryParser:
             inferred_filters["program_id"] = matched_program_id
         if matched_channel:
             inferred_filters["channel_name"] = matched_channel
-        if matched_genre:
+        if matched_genres:
+            inferred_filters["genre_list"] = (
+                [g.lower() for g in matched_genres] if len(matched_genres) > 1 else matched_genres[0].lower()
+            )
+        elif matched_genre:
             inferred_filters["genre_list"] = matched_genre.lower()
         if matched_content_type:
-            inferred_filters["content_type"] = matched_content_type.lower()
+            inferred_filters["content_type_list"] = matched_content_type.lower()
         if matched_language:
-            inferred_filters["language"] = matched_language
+            inferred_filters["info_language"] = matched_language.lower()
         if episode_number is not None:
             inferred_filters["episode_number"] = episode_number
+        if matched_person:
+            inferred_filters["starring_list"] = matched_person
 
         is_nlp_assisted = bool(extracted_entities or episode_number is not None)
         elapsed_ms = round((time.perf_counter() - start_time) * 1000.0, 3)
@@ -252,8 +270,10 @@ class QueryParser:
             matched_program_id=matched_program_id,
             matched_program_name=matched_program_name,
             matched_genre=matched_genre,
+            matched_genres=matched_genres,
             matched_channel=matched_channel,
             matched_content_type=matched_content_type,
+            matched_person=matched_person,
             matched_language=matched_language,
             remaining_query=remaining_query,
             inferred_filters=inferred_filters,
@@ -287,5 +307,8 @@ class QueryParser:
         remaining = " ".join(chunks)
         # Clean up stray punctuation and whitespace
         remaining = _WHITESPACE_RE.sub(" ", remaining).strip()
+        remaining = _DANGLING_PUNCT_RE.sub("", remaining).strip()
+        # Clean dangling prepositions like "with", "starring", "about"
+        remaining = _DANGLING_PREPOSITIONS_RE.sub("", remaining).strip()
         remaining = _DANGLING_PUNCT_RE.sub("", remaining).strip()
         return remaining
