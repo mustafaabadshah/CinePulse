@@ -25,18 +25,39 @@ _EPISODE_PATTERNS = [
 # Patterns for conversational intent, stop-words, and OTT discovery fillers
 _CONVERSATIONAL_INTENT_PATTERNS = [
     re.compile(
-        r"\b(?:i\s+(?:want|would\s+like|need)\s+to\s+(?:watch|see|stream|find|play|get)|can\s+(?:i|you)\s+(?:show|watch|find|play|stream)|please\s+(?:show|play|find|stream)|show\s+me|find\s+me|search\s+for|looking\s+for|give\s+me|stream|watch|play|something)\b",
+        r"\b(?:"
+        r"i\s+(?:want|would\s+like|'d\s+like|d\s+like|need)(?:\s+to\s+(?:watch|see|stream|find|play|get|have))?"
+        r"|want\s+to\s+(?:watch|see|stream|find|play|get)"
+        r"|can\s+(?:i|you)\s+(?:show|watch|find|play|stream|suggest|recommend|give)(?:\s+me)?"
+        r"|could\s+you\s+(?:show|find|stream|suggest|recommend|give)(?:\s+me)?"
+        r"|please\s+(?:show|play|find|stream|give|recommend|suggest)(?:\s+me)?"
+        r"|show\s+me|find\s+me|give\s+me|tell\s+me(?:\s+about)?"
+        r"|recommend(?:\s+me)?|suggest(?:\s+me)?"
+        r"|search\s+for|looking\s+for|look\s+for"
+        r"|what\s+are\s+(?:some\s+)?good|any\s+good|some\s+good"
+        r"|is\s+there\s+any"
+        r")\b",
         re.IGNORECASE,
     ),
-    re.compile(r"\b(?:online|stream|hd|watch|free)\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:online|stream|streaming|hd|watch|watching|view|play|free|something|anything)\b",
+        re.IGNORECASE,
+    ),
 ]
 
 _DANGLING_PUNCT_RE = re.compile(r"^[^\w\s]+|[^\w\s]+$")
-_DANGLING_PREPOSITIONS_RE = re.compile(
-    r"^(?:with|starring|featuring|in|of|by|about|and|or|for)\s+|\s+(?:with|starring|featuring|in|of|by|about|and|or|for)$",
-    re.IGNORECASE,
-)
 _WHITESPACE_RE = re.compile(r"\s+")
+
+# Pure connector and grammatical filler words that should not become standalone search keywords
+_OTT_CONNECTOR_STOP_WORDS: Set[str] = {
+    "a", "an", "the", "and", "or", "in", "on", "at", "to", "for", "of",
+    "by", "with", "is", "it", "as", "about", "from", "into", "through",
+    "i", "me", "my", "we", "us", "you", "your", "he", "she", "they",
+    "want", "wants", "like", "likes", "need", "needs", "show", "shows",
+    "watch", "see", "movie", "movies", "film", "films", "series", "video",
+    "videos", "episode", "episodes", "clip", "clips", "good", "best", "some",
+    "any", "please", "can", "could", "would", "all", "starring", "featuring"
+}
 
 
 class QueryParser:
@@ -327,7 +348,22 @@ class QueryParser:
         # Clean up stray punctuation and whitespace
         remaining = _WHITESPACE_RE.sub(" ", remaining).strip()
         remaining = _DANGLING_PUNCT_RE.sub("", remaining).strip()
-        # Clean dangling prepositions like "with", "starring", "about"
-        remaining = _DANGLING_PREPOSITIONS_RE.sub("", remaining).strip()
+
+        # Tokenize and prune leading/trailing connectors & stop words
+        words = remaining.split()
+        while words and (words[0].lower() in _OTT_CONNECTOR_STOP_WORDS or bool(_DANGLING_PUNCT_RE.match(words[0]))):
+            words.pop(0)
+        while words and (words[-1].lower() in _OTT_CONNECTOR_STOP_WORDS or bool(_DANGLING_PUNCT_RE.match(words[-1]))):
+            words.pop()
+
+        # If what remains has no real content tokens, collapse to empty string
+        content_words = [
+            w for w in words
+            if w.lower() not in _OTT_CONNECTOR_STOP_WORDS and not bool(_DANGLING_PUNCT_RE.match(w))
+        ]
+        if not content_words:
+            return ""
+
+        remaining = " ".join(words).strip()
         remaining = _DANGLING_PUNCT_RE.sub("", remaining).strip()
         return remaining

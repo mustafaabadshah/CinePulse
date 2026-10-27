@@ -17,6 +17,10 @@ from app.search.indexes import (
     INDEX_EPISODES,
     INDEX_PROGRAMS,
 )
+from app.services.nlp.query_parser import (
+    _CONVERSATIONAL_INTENT_PATTERNS,
+    _OTT_CONNECTOR_STOP_WORDS,
+)
 from app.services.nlp.schemas import QueryInterpretation
 from app.services.nlp.service import NLPService, nlp_service as default_nlp_service
 from meilisearch.client import Client
@@ -179,14 +183,24 @@ class SearchService:
         used_fallback = False
         if is_assisted and total_hits == 0 and raw_query:
             logger.info(f"Assisted search produced 0 hits for '{raw_query}'. Falling back to baseline search.")
+            # Clean conversational stop-words from fallback query to prevent matching single letters like "I"
+            fallback_query = raw_query
+            if interpretation and interpretation.normalized_query:
+                clean_q = interpretation.normalized_query
+                for pat in _CONVERSATIONAL_INTENT_PATTERNS:
+                    clean_q = pat.sub(" ", clean_q)
+                tokens = [w for w in clean_q.split() if w.lower() not in _OTT_CONNECTOR_STOP_WORDS]
+                if tokens:
+                    fallback_query = " ".join(tokens)
+
             hits, total_hits, facet_dist = self._execute_search_passes(
                 target_type=target_type,
                 limit=limit,
                 offset=offset,
                 raw_filters=req.filters or {},
                 sort=req.sort,
-                prog_query=raw_query,
-                ep_query=raw_query,
+                prog_query=fallback_query,
+                ep_query=fallback_query,
                 prog_inferred_filters={},
                 ep_inferred_filters={},
             )

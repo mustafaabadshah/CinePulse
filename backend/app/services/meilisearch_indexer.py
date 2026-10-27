@@ -18,9 +18,16 @@ from app.search.client import get_meilisearch_client
 INDEX_EPISODES = "episodes"
 INDEX_PROGRAMS = "programs"
 
+_COMMON_STOP_WORDS = [
+    "a", "an", "the", "and", "or", "in", "on", "at", "to", "for", "of",
+    "by", "with", "is", "it", "as", "i", "me", "my", "we", "us", "you",
+    "your", "he", "she", "they", "want", "wants"
+]
+
 MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
     INDEX_EPISODES: {
         "primary_key": "id",
+        "stop_words": _COMMON_STOP_WORDS,
         "searchable_attributes": [
             "title",
             "program_name",
@@ -98,6 +105,7 @@ MEDIA_INDEX_CONFIGS: Dict[str, Dict[str, Any]] = {
     },
     INDEX_PROGRAMS: {
         "primary_key": "id",
+        "stop_words": _COMMON_STOP_WORDS,
         "searchable_attributes": [
             "name",
             "info_staring",
@@ -177,6 +185,7 @@ def setup_media_indexes(client: Client) -> List[int]:
             "rankingRules": cfg["ranking_rules"],
             "typoTolerance": cfg["typo_tolerance"],
             "pagination": cfg["pagination"],
+            "stopWords": cfg.get("stop_words", []),
         }
         task = idx.update_settings(settings_payload)
         task_uids.append(task.task_uid)
