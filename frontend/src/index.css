@@ -195,6 +195,18 @@ mark {
   border: 1px solid rgba(14, 165, 233, 0.4);
 }
 
+.badge-movie {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+.badge-podcast {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
 .badge-channel {
   background: rgba(168, 85, 247, 0.2);
   color: #c084fc;

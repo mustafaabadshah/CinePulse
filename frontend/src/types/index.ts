@@ -14,6 +14,7 @@ export interface SearchResultItem {
   content_tier?: string;
   channel_name?: string;
   program_name?: string;
+  content_type?: string;
   raw: Record<string, any>;
   formatted?: Record<string, any>;
 }

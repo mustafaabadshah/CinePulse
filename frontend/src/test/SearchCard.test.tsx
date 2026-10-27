@@ -61,4 +61,31 @@ describe("SearchCard Component", () => {
     expect(screen.getByText("Channel")).toBeInTheDocument();
     expect(screen.getByText("News")).toBeInTheDocument();
   });
+
+  it("renders movie card with Movie badge", () => {
+    const item: SearchResultItem = {
+      id: "prog_303",
+      type: "program",
+      title: "Teri Meri Kahaniyaan",
+      channel_name: "Tamasha Movies",
+      content_type: "short film, movie",
+      tags: ["Comedy", "Romance"],
+      raw: {
+        type: "program",
+        info_content_type: "short film, movie",
+        channel_name: "Tamasha Movies",
+        info_language: "urdu",
+      },
+    };
+
+    render(
+      <BrowserRouter>
+        <SearchCard item={item} />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText("Teri Meri Kahaniyaan")).toBeInTheDocument();
+    expect(screen.getAllByText("Movie").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("Tamasha Movies")).toBeInTheDocument();
+  });
 });

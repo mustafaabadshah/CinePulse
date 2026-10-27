@@ -7,6 +7,9 @@ import {
   Clock,
   Eye,
   Users,
+  Film,
+  Video,
+  Mic,
 } from "lucide-react";
 import { SearchResultItem } from "../types";
 import { formatDuration, isTeaserOrClip } from "../utils/formatDuration";
@@ -40,6 +43,96 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
   const durationText = formatDuration(item.duration_seconds, item.duration);
   const isTeaser = isEpisode && isTeaserOrClip(item.duration_seconds);
 
+  // Helper to determine the precise content badge, label, and icon
+  const getBadgeDetails = () => {
+    if (isEpisode) {
+      return {
+        label: "Episode",
+        icon: <Play size={11} fill="currentColor" />,
+        className: "badge-episode",
+      };
+    }
+    if (isChannel) {
+      return {
+        label: "Channel",
+        icon: <Radio size={11} />,
+        className: "badge-channel",
+      };
+    }
+
+    const ctypeStr = (
+      item.content_type ||
+      item.raw?.info_content_type ||
+      item.raw?.content_type ||
+      ""
+    ).toLowerCase();
+
+    const ctypeList: string[] = Array.isArray(item.raw?.content_type_list)
+      ? item.raw.content_type_list.map((c: string) => String(c).toLowerCase())
+      : [];
+
+    const has = (keyword: string) =>
+      ctypeStr.includes(keyword) || ctypeList.some((c) => c.includes(keyword));
+
+    if (has("movie") || has("film") || has("cinema")) {
+      return {
+        label: "Movie",
+        icon: <Film size={11} />,
+        className: "badge-movie",
+      };
+    }
+    if (has("telefilm")) {
+      return {
+        label: "Telefilm",
+        icon: <Film size={11} />,
+        className: "badge-movie",
+      };
+    }
+    if (has("short film") || has("shortfilm")) {
+      return {
+        label: "Short Film",
+        icon: <Film size={11} />,
+        className: "badge-movie",
+      };
+    }
+    if (has("documentary") || has("docu")) {
+      return {
+        label: "Documentary",
+        icon: <Video size={11} />,
+        className: "badge-program",
+      };
+    }
+    if (has("podcast")) {
+      return {
+        label: "Podcast",
+        icon: <Mic size={11} />,
+        className: "badge-podcast",
+      };
+    }
+    if (has("talk show") || has("interview")) {
+      return {
+        label: "Talk Show",
+        icon: <Tv size={11} />,
+        className: "badge-program",
+      };
+    }
+    if (has("drama") || has("series") || has("web series")) {
+      return {
+        label: "Series",
+        icon: <Tv size={11} />,
+        className: "badge-program",
+      };
+    }
+
+    return {
+      label: "Show",
+      icon: <Tv size={11} />,
+      className: "badge-program",
+    };
+  };
+
+  const badge = getBadgeDetails();
+
   // Guard against duplicate cast list shown in snippet
   const isDuplicateCastSnippet =
     !isEpisode &&
@@ -63,22 +156,10 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
         <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
           {/* Entity Type Badge */}
-          {isEpisode ? (
-            <span className="badge badge-episode">
-              <Play size={11} fill="currentColor" />
-              <span>Episode</span>
-            </span>
-          ) : isChannel ? (
-            <span className="badge badge-channel">
-              <Radio size={11} />
-              <span>Channel</span>
-            </span>
-          ) : (
-            <span className="badge badge-program">
-              <Tv size={11} />
-              <span>Show</span>
-            </span>
-          )}
+          <span className={`badge ${badge.className}`}>
+            {badge.icon}
+            <span>{badge.label}</span>
+          </span>
           {" "}
 
           {/* Episode Specific Badges */}
@@ -244,6 +325,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
             type={isEpisode ? "episode" : isChannel ? "channel" : "program"}
             aspectRatio={isEpisode ? "16 / 9" : "3 / 4"}
             showPlayBadge={isEpisode}
+            contentType={item.content_type || item.raw?.info_content_type}
           />
         </Link>
 
@@ -260,7 +342,7 @@ export const SearchCard: React.FC<SearchCardProps> = ({ item }) => {
           {/* Program name connection for episodes */}
           {isEpisode && item.program_name && (
             <div style={{ color: "var(--accent-red)", fontSize: "0.85rem", fontWeight: 600, marginBottom: "6px" }}>
-              Show: {item.program_name}
+              {(item.content_type || "").toLowerCase().includes("movie") ? "Movie: " : "Show: "}{item.program_name}
             </div>
           )}
 

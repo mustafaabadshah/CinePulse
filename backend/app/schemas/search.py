@@ -40,6 +40,7 @@ class SearchResultItem(BaseModel):
     content_tier: Optional[str] = None
     channel_name: Optional[str] = None
     program_name: Optional[str] = None
+    content_type: Optional[str] = None
     raw: Dict[str, Any] = Field(default_factory=dict)
     formatted: Optional[Dict[str, Any]] = Field(default=None, description="Highlighted attributes")
 

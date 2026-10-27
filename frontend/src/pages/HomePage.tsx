@@ -464,7 +464,23 @@ export const HomePage: React.FC = () => {
                 >
                   <div>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                      <span className="badge badge-program">Show</span>
+                      <span className={`badge ${
+                        (item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("movie")
+                          ? "badge-movie"
+                          : (item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("telefilm")
+                          ? "badge-movie"
+                          : (item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("podcast")
+                          ? "badge-podcast"
+                          : "badge-program"
+                      }`}>
+                        {(item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("movie")
+                          ? "Movie"
+                          : (item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("telefilm")
+                          ? "Telefilm"
+                          : (item.content_type || item.raw?.info_content_type || "").toLowerCase().includes("podcast")
+                          ? "Podcast"
+                          : "Show"}
+                      </span>
                       {item.raw?.channel_name && (
                         <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
                           {item.raw.channel_name}

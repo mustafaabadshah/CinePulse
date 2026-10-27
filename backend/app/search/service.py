@@ -320,6 +320,7 @@ class SearchService:
                             thumbnail=item.get("thumbnail"),
                             channel_name=item.get("channel_name"),
                             program_name=None,
+                            content_type=item.get("info_content_type") or item.get("content_type"),
                             raw=item,
                             formatted=formatted,
                         )
@@ -404,6 +405,7 @@ class SearchService:
                             content_tier=item.get("content_tier"),
                             channel_name=item.get("channel_name"),
                             program_name=item.get("program_name"),
+                            content_type=item.get("content_type"),
                             raw=item,
                             formatted=formatted,
                         )

@@ -122,7 +122,7 @@ export const SearchResultsPage: React.FC = () => {
   const mediaTabs = [
     { id: "all", label: "All Media" },
     { id: "episodes", label: "Episodes" },
-    { id: "programs", label: "Shows" },
+    { id: "programs", label: "Shows & Movies" },
     { id: "channels", label: "Live Channels" },
   ];
 

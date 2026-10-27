@@ -10,6 +10,9 @@ import {
   CheckCircle,
   Clock,
   Eye,
+  Radio,
+  Video,
+  Mic,
 } from "lucide-react";
 import { getProgram } from "../api/client";
 import { Program } from "../types";
@@ -67,6 +70,37 @@ export const ProgramDetailPage: React.FC = () => {
     return views.toLocaleString();
   };
 
+  const getProgramBadge = () => {
+    if (program?.type === "channel") {
+      return { label: "Channel", icon: <Radio size={12} />, className: "badge-channel" };
+    }
+    const ctype = (program?.info_content_type || "").toLowerCase();
+    if (ctype.includes("movie") || ctype.includes("film")) {
+      return { label: "Movie", icon: <Film size={12} />, className: "badge-movie" };
+    }
+    if (ctype.includes("telefilm")) {
+      return { label: "Telefilm", icon: <Film size={12} />, className: "badge-movie" };
+    }
+    if (ctype.includes("short film")) {
+      return { label: "Short Film", icon: <Film size={12} />, className: "badge-movie" };
+    }
+    if (ctype.includes("documentary")) {
+      return { label: "Documentary", icon: <Video size={12} />, className: "badge-program" };
+    }
+    if (ctype.includes("podcast")) {
+      return { label: "Podcast", icon: <Mic size={12} />, className: "badge-podcast" };
+    }
+    if (ctype.includes("talk show")) {
+      return { label: "Talk Show", icon: <Tv size={12} />, className: "badge-program" };
+    }
+    if (ctype.includes("drama") || ctype.includes("series")) {
+      return { label: "Series", icon: <Tv size={12} />, className: "badge-program" };
+    }
+    return { label: "Show", icon: <Tv size={12} />, className: "badge-program" };
+  };
+
+  const badge = getProgramBadge();
+
   return (
     <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
       {/* Back button */}
@@ -94,19 +128,19 @@ export const ProgramDetailPage: React.FC = () => {
           {/* Program Poster */}
           <div style={{ width: "160px", flexShrink: 0, borderRadius: "10px", overflow: "hidden" }}>
             <MediaImage
-              src={program.thumbnail || (program.episodes && program.episodes[0]?.thumbnail)}
-              alt={program.name}
-              type={program.type === "channel" ? "channel" : "program"}
+              src={program?.thumbnail || (program?.episodes && program.episodes[0]?.thumbnail)}
+              alt={program?.name || ""}
+              type={program?.type === "channel" ? "channel" : "program"}
               aspectRatio="3 / 4"
-              title={program.name}
+              title={program?.name}
             />
           </div>
 
           <div style={{ flex: 1, minWidth: "260px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
-            <span className="badge badge-program">
-              <Tv size={12} />
-              <span>{program.type || "Program"}</span>
+            <span className={`badge ${badge.className}`}>
+              {badge.icon}
+              <span>{badge.label}</span>
             </span>
             {program.channel_name && (
               <span

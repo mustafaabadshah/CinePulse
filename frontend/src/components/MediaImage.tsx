@@ -39,6 +39,7 @@ export interface MediaImageProps {
   title?: string;
   subtitle?: string;
   showPlayBadge?: boolean;
+  contentType?: string;
 }
 
 export const MediaImage: React.FC<MediaImageProps> = ({
@@ -52,6 +53,7 @@ export const MediaImage: React.FC<MediaImageProps> = ({
   title,
   subtitle,
   showPlayBadge = false,
+  contentType,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -144,10 +146,27 @@ export const MediaImage: React.FC<MediaImageProps> = ({
                 <span>Live Channel</span>
               </>
             ) : isProgram ? (
-              <>
-                <Tv size={10} />
-                <span>Show</span>
-              </>
+              contentType?.toLowerCase().includes("movie") ? (
+                <>
+                  <Film size={10} />
+                  <span>Movie</span>
+                </>
+              ) : contentType?.toLowerCase().includes("telefilm") ? (
+                <>
+                  <Film size={10} />
+                  <span>Telefilm</span>
+                </>
+              ) : contentType?.toLowerCase().includes("podcast") ? (
+                <>
+                  <Radio size={10} />
+                  <span>Podcast</span>
+                </>
+              ) : (
+                <>
+                  <Tv size={10} />
+                  <span>Show</span>
+                </>
+              )
             ) : (
               <>
                 <Film size={10} />
