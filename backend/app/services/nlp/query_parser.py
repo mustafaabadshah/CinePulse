@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import difflib
 import re
 import time
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -22,25 +23,31 @@ _EPISODE_PATTERNS = [
     re.compile(r"\bep\.?\s*(\d+)\b", re.IGNORECASE),
 ]
 
+# Verb & intent typo variants
+_WATCH_VARIANTS = r"(?:watch|wtch|watc|wacth|wathc|watsh|wath|wch|see|se|stream|streem|strem|stram|find|fnd|play|ply|paly|get|have|view)"
+_WANT_VARIANTS = r"(?:want|wnt|wnat|wabt|would\s+like|wud\s+like|'d\s+like|d\s+like|need|ned)"
+_SHOW_VARIANTS = r"(?:show|sho|shw|shwo|play|ply|find|fnd|give|giv|gve|stream|streem|recommend|recommed|recomnd|suggest|sugest)"
+_PLEASE_VARIANTS = r"(?:please|plz|pls|plez|plse)"
+_YOU_VARIANTS = r"(?:you|u|ya)"
+
 # Patterns for conversational intent, stop-words, and OTT discovery fillers
 _CONVERSATIONAL_INTENT_PATTERNS = [
     re.compile(
-        r"\b(?:"
-        r"i\s+(?:want|would\s+like|'d\s+like|d\s+like|need)(?:\s+to\s+(?:watch|see|stream|find|play|get|have))?"
-        r"|want\s+to\s+(?:watch|see|stream|find|play|get)"
-        r"|can\s+(?:i|you)\s+(?:show|watch|find|play|stream|suggest|recommend|give)(?:\s+me)?"
-        r"|could\s+you\s+(?:show|find|stream|suggest|recommend|give)(?:\s+me)?"
-        r"|please\s+(?:show|play|find|stream|give|recommend|suggest)(?:\s+me)?"
-        r"|show\s+me|find\s+me|give\s+me|tell\s+me(?:\s+about)?"
-        r"|recommend(?:\s+me)?|suggest(?:\s+me)?"
-        r"|search\s+for|looking\s+for|look\s+for"
-        r"|what\s+are\s+(?:some\s+)?good|any\s+good|some\s+good"
-        r"|is\s+there\s+any"
-        r")\b",
+        rf"\b(?:"
+        rf"(?:i\s+)?{_WANT_VARIANTS}(?:\s+(?:to|2)\s+{_WATCH_VARIANTS})?"
+        rf"|(?:want|wnt)\s+(?:to|2)\s+{_WATCH_VARIANTS}"
+        rf"|(?:can|could|cud)\s+(?:i|{_YOU_VARIANTS})\s+{_SHOW_VARIANTS}(?:\s+me)?"
+        rf"|{_PLEASE_VARIANTS}\s+{_SHOW_VARIANTS}(?:\s+me)?"
+        rf"|{_SHOW_VARIANTS}\s+me(?:\s+about)?"
+        rf"|(?:recommend|recommed|recomnd|suggest|sugest)(?:\s+me)?"
+        rf"|(?:search\s+for|serch\s+for|looking\s+for|loking\s+for|look\s+for|lok\s+for)"
+        rf"|what\s+are\s+(?:some\s+)?good|any\s+good|some\s+good"
+        rf"|is\s+there\s+any"
+        rf")\b",
         re.IGNORECASE,
     ),
     re.compile(
-        r"\b(?:online|stream|streaming|hd|watch|watching|view|play|free|something|anything)\b",
+        rf"\b(?:online|stream|streaming|streem|hd|{_WATCH_VARIANTS}|view|viewing|free|something|smth|smthng|anything|things|stuff)\b",
         re.IGNORECASE,
     ),
 ]
@@ -50,14 +57,27 @@ _WHITESPACE_RE = re.compile(r"\s+")
 
 # Pure connector and grammatical filler words that should not become standalone search keywords
 _OTT_CONNECTOR_STOP_WORDS: Set[str] = {
-    "a", "an", "the", "and", "or", "in", "on", "at", "to", "for", "of",
-    "by", "with", "is", "it", "as", "about", "from", "into", "through",
-    "i", "me", "my", "we", "us", "you", "your", "he", "she", "they",
-    "want", "wants", "like", "likes", "need", "needs", "show", "shows",
-    "watch", "see", "movie", "movies", "film", "films", "series", "video",
-    "videos", "episode", "episodes", "clip", "clips", "good", "best", "some",
-    "any", "please", "can", "could", "would", "all", "starring", "featuring"
+    # Pronouns & typo variations
+    "i", "me", "my", "we", "us", "you", "u", "ya", "your", "he", "she", "they",
+    # Articles & prepositions
+    "a", "an", "the", "and", "or", "in", "on", "at", "to", "2", "too", "for", "4", "of",
+    "by", "with", "wth", "wit", "w/", "is", "it", "as", "about", "abt", "bout", "from", "into", "through",
+    # Intent verbs & common typos
+    "want", "wants", "wnt", "wnat", "like", "likes", "need", "needs",
+    "show", "shows", "sho", "shw", "give", "giv", "gve",
+    "watch", "watches", "wtch", "watc", "wacth", "wath", "wch", "watching", "see", "se",
+    "stream", "streams", "streem", "strem", "stram", "streaming", "play", "ply",
+    "movie", "movies", "movi", "moive", "film", "films", "flm", "flim",
+    "drama", "dramas", "darma", "series", "video", "videos", "episode", "episodes",
+    "clip", "clips", "good", "best", "some", "any", "please", "plz", "pls",
+    "can", "could", "cud", "would", "wud", "all", "starring", "staring", "featuring"
 }
+
+_COMMON_INTENT_CANONICAL_WORDS = [
+    "watch", "stream", "show", "play", "movie", "film", "drama",
+    "series", "episode", "want", "like", "need", "please", "video",
+    "free", "online", "good", "best", "something", "anything"
+]
 
 
 class QueryParser:
@@ -349,18 +369,28 @@ class QueryParser:
         remaining = _WHITESPACE_RE.sub(" ", remaining).strip()
         remaining = _DANGLING_PUNCT_RE.sub("", remaining).strip()
 
+        def is_stop_token(token: str) -> bool:
+            lower = token.lower()
+            if lower in {"live", "life", "love", "line", "link", "news", "show"}:
+                return False
+            if lower in _OTT_CONNECTOR_STOP_WORDS or bool(_DANGLING_PUNCT_RE.match(lower)):
+                return True
+            # Fuzzy check against canonical intent stop words (e.g. wtttch, streem)
+            if len(lower) >= 4:
+                matches = difflib.get_close_matches(lower, _COMMON_INTENT_CANONICAL_WORDS, n=1, cutoff=0.78)
+                if matches:
+                    return True
+            return False
+
         # Tokenize and prune leading/trailing connectors & stop words
         words = remaining.split()
-        while words and (words[0].lower() in _OTT_CONNECTOR_STOP_WORDS or bool(_DANGLING_PUNCT_RE.match(words[0]))):
+        while words and is_stop_token(words[0]):
             words.pop(0)
-        while words and (words[-1].lower() in _OTT_CONNECTOR_STOP_WORDS or bool(_DANGLING_PUNCT_RE.match(words[-1]))):
+        while words and is_stop_token(words[-1]):
             words.pop()
 
         # If what remains has no real content tokens, collapse to empty string
-        content_words = [
-            w for w in words
-            if w.lower() not in _OTT_CONNECTOR_STOP_WORDS and not bool(_DANGLING_PUNCT_RE.match(w))
-        ]
+        content_words = [w for w in words if not is_stop_token(w)]
         if not content_words:
             return ""
 

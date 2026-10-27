@@ -25,31 +25,31 @@ _EXCLUDED_SHORT_WORDS: Set[str] = {
 # Semantic OTT synonyms mapping common conversational phrases to catalog genres & content types
 OTT_INTENT_SYNONYMS = [
     # Mystery
-    (EntityType.GENRE, ["mystery", "mysteries", "mystry", "mistery", "detective", "clues", "whodunit", "secret", "mysterious"], "mystery"),
+    (EntityType.GENRE, ["mystery", "mysteries", "mystry", "mistery", "mistry", "detective", "clues", "whodunit", "secret", "mysterious"], "mystery"),
     # Thriller
-    (EntityType.GENRE, ["thriller", "thrillers", "suspenseful", "edge of seat", "thril", "thriler"], "thriller"),
+    (EntityType.GENRE, ["thriller", "thrillers", "suspenseful", "edge of seat", "thril", "thriler", "triler", "thrillr"], "thriller"),
     # Suspense
-    (EntityType.GENRE, ["suspense", "suspense drama"], "suspense"),
+    (EntityType.GENRE, ["suspense", "suspense drama", "suspens"], "suspense"),
     # Action
-    (EntityType.GENRE, ["action", "fight", "fighting", "combat", "stunt", "stunts", "martial arts"], "action"),
+    (EntityType.GENRE, ["action", "fight", "fighting", "combat", "stunt", "stunts", "martial arts", "acshun", "acton", "akshun"], "action"),
     # Crime
-    (EntityType.GENRE, ["crime", "murder", "police", "investigation", "cop", "cops", "gangster", "mafia", "underworld"], "crime"),
+    (EntityType.GENRE, ["crime", "murder", "police", "investigation", "cop", "cops", "gangster", "mafia", "underworld", "crim"], "crime"),
     # Horror
-    (EntityType.GENRE, ["horror", "scary", "spooky", "creepy", "ghost", "haunted", "khauf", "darawna", "horor"], "horror"),
+    (EntityType.GENRE, ["horror", "scary", "spooky", "creepy", "ghost", "haunted", "khauf", "darawna", "horor", "horer", "horro"], "horror"),
     # Comedy
-    (EntityType.GENRE, ["funny", "hilarious", "humor", "humorous", "comedy", "comedies", "jokes", "standup", "fun", "hasna", "latifay", "comdy", "comady"], "comedy"),
+    (EntityType.GENRE, ["funny", "hilarious", "humor", "humorous", "comedy", "comedies", "jokes", "standup", "fun", "hasna", "latifay", "comdy", "comady", "comedi"], "comedy"),
     # Romance
-    (EntityType.GENRE, ["romance", "romantic", "love story", "love stories", "ishq", "pyar", "muhabbat", "romnce"], "romance"),
+    (EntityType.GENRE, ["romance", "romantic", "love story", "love stories", "ishq", "pyar", "muhabbat", "romnce", "romantik"], "romance"),
     # Drama
-    (EntityType.GENRE, ["drama", "dramas", "serial", "serials", "soap", "afsaana", "darma", "dram"], "drama"),
+    (EntityType.GENRE, ["drama", "dramas", "serial", "serials", "soap", "afsaana", "darma", "dram", "draama"], "drama"),
     # Kids
-    (EntityType.GENRE, ["kids", "children", "cartoon", "cartoons", "animated", "animation", "baccho"], "kids"),
+    (EntityType.GENRE, ["kids", "children", "cartoon", "cartoons", "animated", "animation", "baccho", "kid"], "kids"),
     # News
-    (EntityType.GENRE, ["news", "bulletin", "khabar", "khabrain", "current affairs", "headline", "headlines"], "news"),
+    (EntityType.GENRE, ["news", "bulletin", "khabar", "khabrain", "current affairs", "headline", "headlines", "newz"], "news"),
     # Sports
-    (EntityType.GENRE, ["sports", "cricket", "match", "tournament", "championship", "psl", "world cup", "football"], "sports"),
+    (EntityType.GENRE, ["sports", "cricket", "match", "tournament", "championship", "psl", "world cup", "football", "sport"], "sports"),
     # Adventure
-    (EntityType.GENRE, ["adventure", "adventures", "quest", "mission"], "adventure"),
+    (EntityType.GENRE, ["adventure", "adventures", "quest", "mission", "adventur"], "adventure"),
     # War
     (EntityType.GENRE, ["war", "military", "army", "soldier", "battle"], "war"),
     # Science Fiction
@@ -68,10 +68,10 @@ OTT_INTENT_SYNONYMS = [
     (EntityType.GENRE, ["culture", "cultural", "heritage", "tradition"], "culture"),
     
     # Content Types / Formats
-    (EntityType.CONTENT_TYPE, ["movie", "movies", "film", "films", "cinema", "feature film", "movi", "moive"], "movie"),
-    (EntityType.CONTENT_TYPE, ["telefilm", "telefilms", "tv film", "teliflm", "teleflm"], "telefilm"),
+    (EntityType.CONTENT_TYPE, ["movie", "movies", "film", "films", "cinema", "feature film", "movi", "moive", "mvoie", "flm", "flim", "muvi"], "movie"),
+    (EntityType.CONTENT_TYPE, ["telefilm", "telefilms", "tv film", "teliflm", "teleflm", "telfilm"], "telefilm"),
     (EntityType.CONTENT_TYPE, ["short film", "short films", "shorts", "shortfilm"], "short film"),
-    (EntityType.CONTENT_TYPE, ["series", "tv series", "tv show", "web series"], "series"),
+    (EntityType.CONTENT_TYPE, ["series", "tv series", "tv show", "web series", "sereis", "seris", "sries"], "series"),
     (EntityType.CONTENT_TYPE, ["podcast", "podcasts"], "podcast"),
     (EntityType.CONTENT_TYPE, ["documentary", "documentaries", "docu"], "documentary"),
     (EntityType.CONTENT_TYPE, ["talk show", "talkshow", "talk shows", "interview", "interviews"], "talk show"),
