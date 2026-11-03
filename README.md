@@ -8,7 +8,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
 [![Tests](https://img.shields.io/badge/Tests-55%20Passed%20(100%25)-success.svg)](#testing--verification)
 
-**CinePulse** is a production-grade OTT video streaming catalog explorer and sub-50ms media discovery platform. Built to showcase modern search relevance engineering, automated catalog normalization, and cinematic dark-mode streaming UI, CinePulse indexes real-world television dramas, news bulletins, comedy series, and live broadcast channels.
+**CinePulse** is a production-grade OTT video streaming catalog explorer and sub-50ms media discovery platform. Built to showcase modern search relevance engineering, automated catalog normalization, and cinematic dark-mode streaming UI, CinePulse indexes real-world television dramas, news bulletins, comedy series, and live broadcast channels..
 
 ---
 
