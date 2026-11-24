@@ -171,7 +171,7 @@ CinePulse/
 │   └── tests/                   # Pytest test suite (29 tests)
 ├── frontend/
 │   ├── src/
-│   │   ├── components/          # MediaImage, SearchCard, FilterSidebar, Pagination
+│   │   ├── components/          # MediaImage, SearchCard, FilterSidebar, Pagination,
 │   │   ├── pages/               # HomePage, SearchResultsPage, ProgramDetailPage, EpisodeDetailPage
 │   │   ├── utils/               # formatDuration, duration parsers
 │   │   └── test/                # Vitest unit test suites (26 tests)
